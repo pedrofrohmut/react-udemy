@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0"/>
+    <title>React Test</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script>
+     const Header = () => {
+       return React.createElement("header", null,
+         React.createElement("h2", null, "My App Header")
+       )
+     }
+
+     const Title = () => (
+       React.createElement("h1", null, "Hello, React!")
+     )
+
+     const App = () => {
+       return React.createElement("div", null, React.createElement(Header), React.createElement(Title))
+     }
+
+     const root = document.getElementById("root")
+     const reactRoot = ReactDOM.createRoot(root)
+     reactRoot.render(React.createElement(App))
+    </script>
+  </body>
+</html>
