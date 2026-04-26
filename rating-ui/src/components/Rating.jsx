@@ -7,6 +7,7 @@ const feedbackMessages = ["Terrible", "Poor", "Fair", "Good", "Excellent"]
 const Rating = () => {
   const [rating, setRating] = useState(0)
   const [hover, setHover] = useState(0)
+  const [submitted, setSubmitted] = useState(false)
 
   const handleClick = star => {
     if (star == rating) {
@@ -42,6 +43,8 @@ const Rating = () => {
       </div>
 
       <p className="feedback">{rating > 0 && feedbackMessages[rating - 1]}</p>
+
+      <button>Submit</button>
     </div>
   )
 }

@@ -47,3 +47,25 @@ body {
     color: #333;
     min-height: 22px;
 }
+
+/* Submit Button */
+.submit-btn {
+    margin-top: 15px;
+    padding: 10px 15px;
+    font-size: 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+    border-radius: 5px;
+}
+
+.submit-btn:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+}
+
+.submit-btn:hover:not(:disabled) {
+    background-color: #0056b3;
+}

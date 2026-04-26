@@ -1,0 +1,7 @@
+# Section & Project Intro
+
+We learned about side effects and how to use the `useEffect` hook in a previous section. One of the most common things to do with this hook is to make HTTP requests. If you are running client-side React and aren't using a framework or environment, when you fetch something from an API or your own backend, it will usually be within an event handler or a lifecycle method. As we saw, when we use function components in React, we use the `useEffect` hook. If you were using classes, which I wouldn't recommend these days, you would use the `componentDidMount` lifecycle method.
+
+I should also mention there are other tools for fetching data in React, such as React Router loaders, which we will look at soon, TanStack Query, formerly known as React Query. In Next.js, you can fetch right from the component because they are server components. These actually make data fetching easier and more efficient. But for now, we will stick to the basics and use the `useEffect` hook to fetch data from an API. So you're learning how to do it the old-fashioned way, which is definitely needed before learning these other environments and tools.
+
+In this section, we're going to build a cryptocurrency dashboard that fetches data from the CoinGecko API. We'll use the `useEffect` hook to make HTTP requests and display the data in the app. We'll also look at how to handle loading and error states when fetching data. Let's get started!
