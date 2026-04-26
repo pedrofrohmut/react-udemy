@@ -1,5 +1,6 @@
 import { useState } from "react"
 import Star from "./Star"
+import Modal from "./Modal"
 
 const stars = [1, 2, 3, 4, 5]
 const feedbackMessages = ["Terrible", "Poor", "Fair", "Good", "Excellent"]
@@ -7,7 +8,7 @@ const feedbackMessages = ["Terrible", "Poor", "Fair", "Good", "Excellent"]
 const Rating = () => {
   const [rating, setRating] = useState(0)
   const [hover, setHover] = useState(0)
-  const [submitted, setSubmitted] = useState(false)
+  const [isSubmitted, setIsSubmitted] = useState(false)
 
   const handleClick = star => {
     if (star == rating) {
@@ -23,6 +24,18 @@ const Rating = () => {
   const handleMouseLeave = () => setHover(0)
 
   const isActive = index => (index < hover || index < rating) ? "active" : ""
+
+  const handleSubmit = () => {
+    if (rating > 0) {
+      setIsSubmitted(true)
+    }
+  }
+
+  const handleCloseModal = () => {
+    setIsSubmitted(false)
+    setRating(0)
+    setHover(0)
+  }
 
   return (
     <div className="rating-container">
@@ -44,7 +57,9 @@ const Rating = () => {
 
       <p className="feedback">{rating > 0 && feedbackMessages[rating - 1]}</p>
 
-      <button>Submit</button>
+      <button className="submit-btn" disabled={rating == 0} onClick={handleSubmit}>Submit</button>
+
+      {isSubmitted && <Modal rating={rating} handleClose={handleCloseModal} />}
     </div>
   )
 }
