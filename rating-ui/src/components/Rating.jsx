@@ -1,4 +1,5 @@
 import { useState } from "react"
+import Star from "./Star"
 
 const stars = [1, 2, 3, 4, 5]
 const feedbackMessages = ["Terrible", "Poor", "Fair", "Good", "Excellent"]
@@ -16,20 +17,11 @@ const Rating = () => {
     }
   }
 
-  const handleMouseEnter = star => {
-    setHover(star)
-  }
+  const handleMouseEnter = star => setHover(star)
 
-  const handleMouseLeave = () => {
-    setHover(0)
-  }
+  const handleMouseLeave = () => setHover(0)
 
-  const isActive = index => {
-    if (index < hover || index < rating) {
-      return "active"
-    }
-    return ""
-  }
+  const isActive = index => (index < hover || index < rating) ? "active" : ""
 
   return (
     <div className="rating-container">
@@ -37,21 +29,19 @@ const Rating = () => {
 
       <div className="stars">
         {stars.map((star, index) => (
-          <span
-            onClick={() => handleClick(star)}
-            onMouseEnter={() => handleMouseEnter(star)}
-            onMouseLeave={() => handleMouseLeave()}
+          <Star
             key={star}
-            className={`star ${isActive(index)}`}
-          >
-            {'\u2605'}
-          </span>
+            star={star}
+            index={index}
+            handleClick={handleClick}
+            handleMouseEnter={handleMouseEnter}
+            handleMouseLeave={handleMouseLeave}
+            isActive={isActive}
+          />
         ))}
       </div>
 
-      {rating > 0 && (
-        <p className="feedback">{feedbackMessages[rating - 1]}</p>
-      )}
+      <p className="feedback">{rating > 0 && feedbackMessages[rating - 1]}</p>
     </div>
   )
 }
