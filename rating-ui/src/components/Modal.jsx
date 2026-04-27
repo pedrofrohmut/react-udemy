@@ -1,4 +1,6 @@
-const Modal = ({ rating, handleClose }) => {
+const Modal = ({ isOpen, rating, handleClose }) => {
+  if (!isOpen) return null
+
   const text = `You rated us ${rating} star${rating > 1 ? "s" : ""}`
 
   return (

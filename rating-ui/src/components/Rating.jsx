@@ -2,7 +2,9 @@ import { useState } from "react"
 import Star from "./Star"
 import Modal from "./Modal"
 
+// TODO: get the number of stars from props and use a function makeStars to make stars array
 const stars = [1, 2, 3, 4, 5]
+
 const feedbackMessages = ["Terrible", "Poor", "Fair", "Good", "Excellent"]
 
 const Rating = () => {
@@ -59,7 +61,7 @@ const Rating = () => {
 
       <button className="submit-btn" disabled={rating == 0} onClick={handleSubmit}>Submit</button>
 
-      {isSubmitted && <Modal rating={rating} handleClose={handleCloseModal} />}
+      <Modal isOpen={isSubmitted} rating={rating} handleClose={handleCloseModal} />
     </div>
   )
 }
