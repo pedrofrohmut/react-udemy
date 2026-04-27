@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react"
 import Star from "./Star"
 import Modal from "./Modal"
+import Button from "./Button"
 
 const initStars = number => {
   const arr = []
@@ -66,7 +67,9 @@ const Rating = ({ number }) => {
 
       <p className="feedback">{rating > 0 && feedbackMessages[rating - 1]}</p>
 
-      <button className="submit-btn" disabled={rating == 0} onClick={handleSubmit}>Submit</button>
+      <Button className="submit-btn" disabled={rating == 0} onClick={handleSubmit}>
+        Submit
+      </Button>
 
       <Modal isOpen={isSubmitted} rating={rating} handleClose={handleCloseModal} />
     </div>
