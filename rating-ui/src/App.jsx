@@ -3,7 +3,7 @@ import Rating from "./components/Rating"
 const App = () => {
   return (
     <div>
-      <Rating />
+      <Rating number={5} />
     </div>
   )
 }

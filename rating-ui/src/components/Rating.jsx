@@ -1,16 +1,23 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import Star from "./Star"
 import Modal from "./Modal"
 
-// TODO: get the number of stars from props and use a function makeStars to make stars array
-const stars = [1, 2, 3, 4, 5]
+const initStars = number => {
+  const arr = []
+  for (let i = 0; i < number; i++)
+    arr.push(i + 1)
+  return arr
+}
 
 const feedbackMessages = ["Terrible", "Poor", "Fair", "Good", "Excellent"]
 
-const Rating = () => {
-  const [rating, setRating] = useState(0)
+const Rating = ({ number }) => {
+  const [rating, setRating] = useState()
   const [hover, setHover] = useState(0)
   const [isSubmitted, setIsSubmitted] = useState(false)
+
+  // You need useMemo here so react does not call it everytime
+  const stars = useMemo(() => initStars(number), [number])
 
   const handleClick = star => {
     if (star == rating) {
