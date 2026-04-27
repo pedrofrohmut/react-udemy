@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { FaPaperPlane } from "react-icons/fa"
 
-const NoteForm = () => {
+const NoteForm = ({ notes, setNotes }) => {
   const [formData, setFormData] = useState({
     title: "",
     priority: "Medium",
@@ -15,8 +15,28 @@ const NoteForm = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
+  const resetForm = () => {
+    setFormData({
+      title: "",
+      priority: "Medium",
+      category: "Work",
+      description: ""
+    })
+  }
+
+  const handleSubmit = e => {
+    e.preventDefault()
+
+    if (!formData.title || !formData.description) return
+
+    const newNote = { id: Date.now(), ...formData }
+    setNotes([...notes, newNote])
+
+    resetForm()
+  }
+
   return (
-    <form className="mb-6">
+    <form onSubmit={handleSubmit} className="mb-6">
       {/* Title */}
       <div className="mb-4">
         <label className="block font-semibold" htmlFor="title">
