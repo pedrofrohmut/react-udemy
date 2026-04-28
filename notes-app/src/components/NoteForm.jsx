@@ -1,5 +1,8 @@
 import { useState } from "react"
 import { FaPaperPlane, FaRotateLeft, FaChevronDown, FaChevronUp } from "react-icons/fa6"
+import TextInput from "./inputs/TextInput"
+import SelectInput from "./inputs/SelectInput"
+import TextAreaInput from "./inputs/TextAreaInput"
 
 const NoteForm = ({ notes, setNotes }) => {
   const [formData, setFormData] = useState({
@@ -57,69 +60,30 @@ const NoteForm = ({ notes, setNotes }) => {
                      ${isFormVisible ? "opacity-100 scale-y-100 h-100" : "opacity-0 scale-y-0 h-0"}`}
         >
           {/* Title */}
-          <div className="mb-4">
-            <label className="block text-gray-600 font-semibold" htmlFor="title">
-              Title
-            </label>
-            <input
-              id="title"
-              name="title"
-              type="text"
-              className="w-full p-2 border border-gray-400 rounded-lg"
-              value={formData.title}
-              onChange={handleChange}
-            />
-          </div>
+          <TextInput label="Title" name="title" value={formData.title} onChange={handleChange} required />
 
           {/* Priority */}
-          <div className="mb-4">
-            <label className="block text-gray-600 font-semibold" htmlFor="priority">
-              Priority
-            </label>
-            <select
-              id="priority"
-              name="priority"
-              className="w-full p-2 border border-gray-400 rounded-lg"
-              value={formData.priority}
-              onChange={handleChange}
-            >
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
-            </select>
-          </div>
+          <SelectInput label="Priority" name="priority" value={formData.priority} onChange={handleChange}>
+            <option value="High">🔴 High</option>
+            <option value="Medium">🟡 Medium</option>
+            <option value="Low">🟢 Low</option>
+          </SelectInput>
 
           {/* Category */}
-          <div className="mb-4">
-            <label className="block text-gray-600 font-semibold" htmlFor="category">
-              Category
-            </label>
-            <select
-              id="category"
-              name="category"
-              className="w-full p-2 border border-gray-400 rounded-lg"
-              value={formData.category}
-              onChange={handleChange}
-            >
-              <option value="Work">Work</option>
-              <option value="Personal">Personal</option>
-              <option value="Ideas">Ideas</option>
-            </select>
-          </div>
+          <SelectInput label="Category" name="category" value={formData.category} onChange={handleChange}>
+            <option value="Work">📁 Work</option>
+            <option value="Personal">🏠 Personal</option>
+            <option value="Ideas">💡 Ideas</option>
+          </SelectInput>
 
           {/* Description */}
-          <div className="mb-4">
-            <label className="block text-gray-600 font-semibold" htmlFor="description">
-              Description
-            </label>
-            <textarea
-              id="description"
-              name="description"
-              className="w-full p-2 border border-gray-400 rounded-lg resize-none"
-              value={formData.description}
-              onChange={handleChange}
-            />
-          </div>
+          <TextAreaInput
+            label="Description"
+            name="description"
+            value={formData.description}
+            onChange={handleChange}
+            required
+          />
 
           <div className="flex gap-4">
             <button
