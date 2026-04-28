@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { FaPaperPlane } from "react-icons/fa"
+import { FaPaperPlane, FaRotateLeft } from "react-icons/fa6"
 
 const NoteForm = ({ notes, setNotes }) => {
   const [formData, setFormData] = useState({
@@ -39,14 +39,14 @@ const NoteForm = ({ notes, setNotes }) => {
     <form onSubmit={handleSubmit} className="mb-6">
       {/* Title */}
       <div className="mb-4">
-        <label className="block font-semibold" htmlFor="title">
+        <label className="block text-gray-600 font-semibold" htmlFor="title">
           Title
         </label>
         <input
           id="title"
           name="title"
           type="text"
-          className="w-full p-2 border rounded-lg"
+          className="w-full p-2 border border-gray-400 rounded-lg"
           value={formData.title}
           onChange={handleChange}
         />
@@ -54,13 +54,13 @@ const NoteForm = ({ notes, setNotes }) => {
 
       {/* Priority */}
       <div className="mb-4">
-        <label className="block font-semibold" htmlFor="priority">
+        <label className="block text-gray-600 font-semibold" htmlFor="priority">
           Priority
         </label>
         <select
           id="priority"
           name="priority"
-          className="w-full p-2 border rounded-lg"
+          className="w-full p-2 border border-gray-400 rounded-lg"
           value={formData.priority}
           onChange={handleChange}
         >
@@ -72,13 +72,13 @@ const NoteForm = ({ notes, setNotes }) => {
 
       {/* Category */}
       <div className="mb-4">
-        <label className="block font-semibold" htmlFor="category">
+        <label className="block text-gray-600 font-semibold" htmlFor="category">
           Category
         </label>
         <select
           id="category"
           name="category"
-          className="w-full p-2 border rounded-lg"
+          className="w-full p-2 border border-gray-400 rounded-lg"
           value={formData.category}
           onChange={handleChange}
         >
@@ -90,24 +90,33 @@ const NoteForm = ({ notes, setNotes }) => {
 
       {/* Description */}
       <div className="mb-4">
-        <label className="block font-semibold" htmlFor="description">
+        <label className="block text-gray-600 font-semibold" htmlFor="description">
           Description
         </label>
         <textarea
           id="description"
           name="description"
-          className="w-full p-2 border rounded-lg resize-none"
+          className="w-full p-2 border border-gray-400 rounded-lg resize-none"
           value={formData.description}
           onChange={handleChange}
         />
       </div>
 
-      <button
-        type="submit"
-        className="w-full bg-purple-500 text-white py-2 rounded-lg cursor-pointer hover:bg-purple-700 flex items-center justify-center gap-2"
-      >
-        <FaPaperPlane /> Add Note
-      </button>
+      <div className="flex gap-4">
+        <button
+          type="submit"
+          className="flex-1 bg-purple-500 text-white py-2 rounded-lg cursor-pointer hover:bg-purple-700 flex items-center justify-center gap-2"
+        >
+          <FaPaperPlane /> Add Note
+        </button>
+        <button
+          type="button"
+          onClick={resetForm}
+          className="flex-1 bg-gray-600 text-gray-100 py-2 rounded-lg cursor-pointer hover:bg-gray-800 flex items-center justify-center gap-2"
+        >
+          <FaRotateLeft /> Reset
+        </button>
+      </div>
     </form>
   )
 }
