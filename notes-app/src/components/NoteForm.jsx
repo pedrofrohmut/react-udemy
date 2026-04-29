@@ -7,8 +7,8 @@ import TextAreaInput from "./inputs/TextAreaInput"
 const NoteForm = ({ notes, setNotes }) => {
   const [formData, setFormData] = useState({
     title: "",
-    priority: "Medium",
-    category: "Work",
+    priority: "medium",
+    category: "work",
     description: ""
   })
   const titleRef = useRef(null)
@@ -24,8 +24,8 @@ const NoteForm = ({ notes, setNotes }) => {
   const resetForm = () => {
     setFormData({
       title: "",
-      priority: "Medium",
-      category: "Work",
+      priority: "medium",
+      category: "work",
       description: ""
     })
   }
@@ -66,16 +66,16 @@ const NoteForm = ({ notes, setNotes }) => {
 
           {/* Priority */}
           <SelectInput label="Priority" name="priority" value={formData.priority} onChange={handleChange}>
-            <option value="High">🔴 High</option>
-            <option value="Medium">🟡 Medium</option>
-            <option value="Low">🟢 Low</option>
+            <option value="high">🔴 High</option>
+            <option value="medium">🟡 Medium</option>
+            <option value="low">🟢 Low</option>
           </SelectInput>
 
           {/* Category */}
           <SelectInput label="Category" name="category" value={formData.category} onChange={handleChange}>
-            <option value="Work">📁 Work</option>
-            <option value="Personal">🏠 Personal</option>
-            <option value="Ideas">💡 Ideas</option>
+            <option value="work">📁 Work</option>
+            <option value="personal">🏠 Personal</option>
+            <option value="ideas">💡 Ideas</option>
           </SelectInput>
 
           {/* Description */}

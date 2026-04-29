@@ -4,10 +4,24 @@ const NoNotes = () => <p className="text-center text-gray-500">No notes yet.</p>
 
 const NoteList = ({ notes, handleDeleteNote }) => {
   if (notes.length == 0) return <NoNotes />
+
+  const borderColor = priority => {
+    switch (priority) {
+      case "high":
+        return "border-red-500"
+      case "medium":
+        return "border-yellow-400"
+      case "low":
+        return "border-green-500"
+      default:
+        return ""
+    }
+  }
+
   return (
     <div className="space-y-4">
       {notes.map(note => (
-        <div key={note.id} className="p-4 bg-white rounded-lg shadow-md border-l-4">
+        <div key={note.id} className={`p-4 bg-white rounded-lg shadow-md border-l-5 ${borderColor(note.priority)}`}>
           <h3 className="text-lg font-bold">{note.title}</h3>
 
           <p className="text-sm text-gray-600">
