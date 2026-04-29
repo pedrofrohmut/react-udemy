@@ -62,7 +62,14 @@ const NoteForm = ({ notes, setNotes }) => {
                      ${isFormVisible ? "opacity-100 scale-y-100 h-100" : "opacity-0 scale-y-0 h-0"}`}
         >
           {/* Title */}
-          <TextInput label="Title" name="title" value={formData.title} onChange={handleChange} required ref={titleRef} />
+          <TextInput
+            label="Title"
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
+            required
+            ref={titleRef}
+          />
 
           {/* Priority */}
           <SelectInput label="Priority" name="priority" value={formData.priority} onChange={handleChange}>
