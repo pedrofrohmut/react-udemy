@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import { FaPaperPlane, FaRotateLeft, FaChevronDown, FaChevronUp } from "react-icons/fa6"
 import TextInput from "./inputs/TextInput"
 import SelectInput from "./inputs/SelectInput"
@@ -11,6 +11,7 @@ const NoteForm = ({ notes, setNotes }) => {
     category: "Work",
     description: ""
   })
+  const titleRef = useRef(null)
 
   const [isFormVisible, setIsFormVisible] = useState(false)
 
@@ -38,6 +39,7 @@ const NoteForm = ({ notes, setNotes }) => {
     setNotes([...notes, newNote])
 
     resetForm()
+    titleRef.current?.focus()
   }
 
   const handleFormToggle = () => setIsFormVisible(prevState => !prevState)
@@ -60,7 +62,7 @@ const NoteForm = ({ notes, setNotes }) => {
                      ${isFormVisible ? "opacity-100 scale-y-100 h-100" : "opacity-0 scale-y-0 h-0"}`}
         >
           {/* Title */}
-          <TextInput label="Title" name="title" value={formData.title} onChange={handleChange} required />
+          <TextInput label="Title" name="title" value={formData.title} onChange={handleChange} required ref={titleRef} />
 
           {/* Priority */}
           <SelectInput label="Priority" name="priority" value={formData.priority} onChange={handleChange}>

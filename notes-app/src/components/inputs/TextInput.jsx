@@ -1,10 +1,11 @@
-const TextInput = ({ label, name, value, onChange, required = false }) => {
+const TextInput = ({ label, name, value, onChange, required = false, ref }) => {
   return (
     <div className="mb-4">
       <label className="block text-gray-600 font-semibold" htmlFor={name}>
         {label}
       </label>
       <input
+        ref={ref}
         id={name}
         name={name}
         type="text"
