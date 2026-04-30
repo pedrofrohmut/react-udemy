@@ -1,5 +1,5 @@
 import { useState } from "react"
-import LifecycleLogger from "./components/LifecycleLoggerClass"
+import LifecycleLogger from "./components/LifecycleLoggerFunction"
 
 const App = () => {
   const [showLogger, setShowLogger] = useState(false)

@@ -50,7 +50,9 @@ class LifecycleLoggerClass extends Component {
         <h2>Lifecycle Logger (Class component)</h2>
         <p>Count: {this.state.count}</p>
         <div style={{ display: "flex", gap: "1rem", alignItems: "center", justifyContent: "center" }}>
-          <button className="secondary-btn" onClick={this.handleDecrement} style={{ width: "40px" }}>-</button>
+          <button className="secondary-btn" onClick={this.handleDecrement} style={{ width: "40px" }}>
+            -
+          </button>
           <button className="secondary-btn" onClick={this.handleIncrement} style={{ width: "40px" }}>
             +
           </button>
