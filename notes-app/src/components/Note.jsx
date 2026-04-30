@@ -4,11 +4,11 @@ const Note = ({ note, handleDeleteNote }) => {
   const borderColor = priority => {
     switch (priority) {
       case "high":
-        return "border-red-500"
+        return "border-red-400"
       case "medium":
         return "border-yellow-400"
       case "low":
-        return "border-green-500"
+        return "border-green-600"
       default:
         return ""
     }
