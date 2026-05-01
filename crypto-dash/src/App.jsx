@@ -20,7 +20,7 @@ const updateLastFetched = shouldKeep => {
   }
 }
 
-const canFetch = (lastFetched, fetchInterval) => {
+const shouldFetch = (lastFetched, fetchInterval) => {
   if (!lastFetched) return true
   const timeDiff = Date.now() - lastFetched
   return timeDiff > fetchInterval
@@ -40,6 +40,14 @@ const setLSCoins = coins => {
   }
 }
 
+/*
+  TODO: Create a custom hook for fetching that have the caching with localStorage
+  all the logic here to a custom hook that you can use in other places just changing
+  the url and the localStorage key and setting the time for the cache invalidate
+
+  Exp: const { data, isLoading, error } = useCachedFetch(URL, LOCAL_STORAGE_KEY, CACHE_TIME)
+ */
+
 const App = () => {
   const [coins, setCoins] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -51,7 +59,7 @@ const App = () => {
 
     // Using localStorage as cache to avoid too much fetching
     // Update it acording to FETCH_INTERVAL
-    if (lsCoins.length > 0 && !canFetch(lastFetched, FETCH_INTERVAL)) {
+    if (lsCoins && lsCoins.length > 0 && !shouldFetch(lastFetched, FETCH_INTERVAL)) {
       console.log("From local storage")
       // LocalStorage is fresh enough get from it instead of fetching
       setCoins(lsCoins)
@@ -79,6 +87,7 @@ const App = () => {
     }
   }
 
+  // TODO: Setup aborting with AbortController for the fetch call
   useEffect(() => {
     fetchAPI()
   }, [])
