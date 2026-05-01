@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 
 const API_URL =
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false"
+  "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false"
 const FIVE_MIN_MS = 5 * 60 * 1000
 const FETCH_INTERVAL = FIVE_MIN_MS
 
@@ -11,8 +11,12 @@ const getLastFetched = () => {
   return parseInt(lastFetched)
 }
 
-const updateLastFetched = () => {
-  localStorage.setItem("lastFetched", Date.now())
+const updateLastFetched = shouldKeep => {
+  if (!shouldKeep) {
+    localStorage.removeItem("lastFetched")
+  } else {
+    localStorage.setItem("lastFetched", Date.now())
+  }
 }
 
 const canFetch = (lastFetched, fetchInterval) => {
@@ -28,7 +32,11 @@ const App = () => {
 
   const fetchAPI = async () => {
     const lastFetched = getLastFetched()
-    if (!canFetch(lastFetched, FETCH_INTERVAL)) return
+
+    if (!canFetch(lastFetched, FETCH_INTERVAL)) {
+      console.log("Too soon to fetch")
+      return
+    }
 
     try {
       const response = await fetch(API_URL)
@@ -42,9 +50,11 @@ const App = () => {
       setCoins(data)
       setIsLoading(false)
 
-      updateLastFetched()
+      updateLastFetched(true)
     } catch (err) {
       setError(err)
+      setIsLoading(false)
+      updateLastFetched(false)
     }
   }
 
@@ -55,6 +65,7 @@ const App = () => {
   return (
     <div>
       <h1>Crypto Dash</h1>
+      <pre>{JSON.stringify(coins, null, 2)}</pre>
     </div>
   )
 }
