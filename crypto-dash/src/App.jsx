@@ -25,6 +25,20 @@ const canFetch = (lastFetched, fetchInterval) => {
   return timeDiff > fetchInterval
 }
 
+const getLSCoins = () => {
+  const lsCoins = localStorage.getItem("coins")
+  if (!lsCoins) return []
+  return JSON.parse(lsCoins)
+}
+
+const setLSCoins = (coins) => {
+  if (coins && coins.length > 0) {
+    localStorage.setItem("coins", JSON.stringify(coins))
+  } else {
+    localStorage.removeItem("coins")
+  }
+}
+
 const App = () => {
   const [coins, setCoins] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -32,9 +46,15 @@ const App = () => {
 
   const fetchAPI = async () => {
     const lastFetched = getLastFetched()
+    const lsCoins = getLSCoins()
 
-    if (!canFetch(lastFetched, FETCH_INTERVAL)) {
-      console.log("Too soon to fetch")
+    // Using localStorage as cache to avoid too much fetching
+    // Update it acording to FETCH_INTERVAL
+    if (lsCoins.length > 0 && !canFetch(lastFetched, FETCH_INTERVAL)) {
+      console.log("From local storage")
+      // LocalStorage is fresh enough get from it instead of fetching
+      setCoins(lsCoins)
+      setIsLoading(false)
       return
     }
 
@@ -45,15 +65,15 @@ const App = () => {
       }
       const data = await response.json()
 
-      console.log(data)
-
+      console.log("Fetched from API")
       setCoins(data)
       setIsLoading(false)
-
+      setLSCoins(data)
       updateLastFetched(true)
     } catch (err) {
       setError(err)
       setIsLoading(false)
+      setLSCoins(null)
       updateLastFetched(false)
     }
   }
@@ -65,7 +85,12 @@ const App = () => {
   return (
     <div>
       <h1>Crypto Dash</h1>
-      <pre>{JSON.stringify(coins, null, 2)}</pre>
+
+      {error && <pre>{JSON.stringify(error, null, 2)}</pre>}
+
+      {isLoading && <p>Fetching Coins...</p>}
+
+      {!isLoading && <pre>{JSON.stringify(coins, null, 2)}</pre>}
     </div>
   )
 }
