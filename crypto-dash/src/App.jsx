@@ -31,7 +31,7 @@ const getLSCoins = () => {
   return JSON.parse(lsCoins)
 }
 
-const setLSCoins = (coins) => {
+const setLSCoins = coins => {
   if (coins && coins.length > 0) {
     localStorage.setItem("coins", JSON.stringify(coins))
   } else {
