@@ -59,10 +59,7 @@ const useCachedPosts = (url, localStorageKey, options = {}) => {
 }
 
 const Coins = () => {
-  const { posts, isLoading, isError } = useCachedPosts(
-    "https://jsonplaceholder.typicode.com/posts",
-    "posts"
-  )
+  const { posts, isLoading, isError } = useCachedPosts("https://jsonplaceholder.typicode.com/posts", "posts")
 
   if (isError) return <p>Error fetching posts.</p>
   if (isLoading) return <p>Fetching posts...</p>
