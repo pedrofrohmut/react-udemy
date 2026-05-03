@@ -90,8 +90,16 @@ const initLimit = () => {
   the url and the localStorage key and setting the time for the cache invalidate
 
   Exp: const { data, isLoading, error } = useCachedFetch(URL, LOCAL_STORAGE_KEY, CACHE_TIME)
+
+
+  TODO: Create a interval that updates the pages every 5 min (FETCH_INTERVAL) if it is focus
+  or checks the last fetched when the page gains focus. Keep page content fresh if it is focused
 */
 
+/*
+  Component description:
+  TODO: Add the description here explaining everything that this component does.
+  */
 const App = () => {
   const [coins, setCoins] = useState([])
   const [isLoading, setIsLoading] = useState(true)
