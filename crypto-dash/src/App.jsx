@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
-import CoinCard from "./components/CoinCard"
 import LimitSelector from "./components/LimitSelector"
+import FilterInput from "./components/FilterInput"
+import FilteredCoins from "./components/FilteredCoins"
 
 const FIVE_MIN_MS = 5 * 60 * 1000
 const FETCH_INTERVAL = FIVE_MIN_MS
@@ -95,6 +96,7 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const [limit, setLimit] = useState(initLimit)
+  const [filter, setFilter] = useState("")
 
   const fetchAPI = async () => {
     try {
@@ -147,13 +149,15 @@ const App = () => {
 
       {isLoading && <p>Fetching Coins...</p>}
 
-      <LimitSelector limit={limit} setLimit={setLimit} />
+      <div className="top-controls">
+        {/* TODO: Make it auto focus at component mount */}
+        <FilterInput filter={filter} setFilter={setFilter} />
+        <LimitSelector limit={limit} setLimit={setLimit} />
+      </div>
 
       {!isLoading && !error && (
         <main className="grid">
-          {coins.map((coin) => (
-            <CoinCard coin={coin} key={coin.id} />
-          ))}
+          <FilteredCoins coins={coins} filter={filter} />
         </main>
       )}
     </div>
