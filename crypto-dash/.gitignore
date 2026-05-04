@@ -28,3 +28,5 @@ yarn.lock
 
 lesson-resources/
 src/assets/
+.yarn
+.pnp.**.*

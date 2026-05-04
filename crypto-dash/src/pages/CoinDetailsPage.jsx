@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams, Link } from "react-router"
 import Money from "../components/Money"
+import Loading from "../components/Loading"
 
 const COIN_DETAIL = "coinDetail"
 const LOADING_TIME = 1500
@@ -70,7 +71,7 @@ const CoinDetailsPage = () => {
 
       <h1 className="coin-details-title">{coin ? `${coin.name} (${coin.symbol.toUpperCase()})` : "Coin Details"}</h1>
 
-      {isLoading && <p>Loading coin details...</p>}
+      {isLoading && <Loading color="black" text="Loading Coin Details..." />}
 
       {error && <div className="error">Error: {error.message}</div>}
 

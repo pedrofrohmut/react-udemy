@@ -3,6 +3,7 @@ import LimitSelector from "../components/LimitSelector"
 import FilterInput from "../components/FilterInput"
 import SortSelector from "../components/SortSelector"
 import CoinCard from "../components/CoinCard"
+import Loading from "../components/Loading"
 
 const FIVE_MIN_MS = 5 * 60 * 1000
 const FETCH_INTERVAL = FIVE_MIN_MS
@@ -136,9 +137,11 @@ const App = () => {
       // or 0 delay if api fetching took longer
       const end = new Date()
       const delay = LOADING_TIME - (end - start)
+      const validDelay = delay > 0 ? delay : 0
+      console.log("Valid Delay: ", (validDelay / 1000), " seconds")
       setTimeout(() => {
         setIsLoading(false)
-      }, delay > 0 ? delay : 0)
+      }, validDelay)
     }
   }
 
@@ -199,7 +202,7 @@ const App = () => {
 
       {error && <pre>{JSON.stringify(error, null, 2)}</pre>}
 
-      {isLoading && <p>Fetching Coins...</p>}
+      {isLoading && <Loading color="white" text="Loading Coins..." />}
 
       {!isLoading && !error && (
         <main className="grid">
