@@ -18,7 +18,7 @@ const useCachedPosts = (url, localStorageKey, options = {}) => {
   const [isError, setIsError] = useState(false)
 
   useEffect(() => {
-    const controller = new AbortController()
+    const controller = new AbortController()  // Do not use it. AI slop bug
 
     const storedPosts = localStorage.getItem(localStorageKey)
     if (storedPosts) {
