@@ -64,7 +64,15 @@ const CoinDetailsPage = () => {
     }
   }, [id])
 
-  // TODO: Make Readmore Element to use in the coin.description
+  /*
+    * TODO: Make Readmore Element to use in the coin.description
+    * TODO: Make it like HomePage. Updates on every 5 min
+    * TODO: Make it update everytime the lsCoinId changes
+    * TODO: Check out how to listen to pageGetFocus (dont know the exact name) and then update the page
+    * if the time is long enough
+    * TODO: Stop the interval to update the page when the page loses focus
+    * TODO: Add an 'auto update' checkbox for the user to chose and only auto update when it is checked
+    */
   return (
     <div className="coin-details-container">
       <Link to="/">Back to Home</Link>

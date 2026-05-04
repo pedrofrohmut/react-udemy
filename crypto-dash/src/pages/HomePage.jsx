@@ -138,7 +138,7 @@ const App = () => {
       const end = new Date()
       const delay = LOADING_TIME - (end - start)
       const validDelay = delay > 0 ? delay : 0
-      console.log("Valid Delay: ", (validDelay / 1000), " seconds")
+      console.log("Valid Delay: ", validDelay / 1000, " seconds")
       setTimeout(() => {
         setIsLoading(false)
       }, validDelay)
