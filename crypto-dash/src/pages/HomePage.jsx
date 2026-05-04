@@ -102,7 +102,7 @@ const initLimit = () => {
   Component description:
   TODO: Add the description here explaining everything that this component does.
 */
-const App = () => {
+const HomePage = () => {
   const [coins, setCoins] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -221,4 +221,4 @@ const App = () => {
   )
 }
 
-export default App
+export default HomePage

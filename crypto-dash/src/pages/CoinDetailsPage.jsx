@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useParams, Link } from "react-router"
 import Money from "../components/Money"
 import Loading from "../components/Loading"
+import CoinChart from "../components/CoinChart"
 
 const COIN_DETAIL = "coinDetail"
 const LOADING_TIME = 1500
@@ -119,6 +120,8 @@ const CoinDetailsPage = () => {
             </h4>
             <h4>Last Updated: {new Date(coin.last_updated).toLocaleDateString()}</h4>
           </div>
+
+          <CoinChart coinId={coin.id} />
 
           <div className="coin-details-links">
             {coin.links.homepage[0] && (
