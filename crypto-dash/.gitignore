@@ -30,3 +30,4 @@ lesson-resources/
 src/assets/
 .yarn
 .pnp.**.*
+.pnp.*
