@@ -6,6 +6,7 @@ import CoinCard from "../components/CoinCard"
 
 const FIVE_MIN_MS = 5 * 60 * 1000
 const FETCH_INTERVAL = FIVE_MIN_MS
+const LOADING_TIME = 1500
 
 const getLastFetched = () => {
   const lastFetched = localStorage.getItem("lastFetched")
@@ -109,6 +110,7 @@ const App = () => {
   const [sortBy, setSortBy] = useState("market_cap_desc")
 
   const fetchAPI = async () => {
+    const start = new Date()
     const url = `${import.meta.env.VITE_COINS_API_URL}&order=${sortBy}&per_page=${limit}&page=1&sparkline=false`
 
     try {
@@ -130,7 +132,13 @@ const App = () => {
       setLSLimit(10)
       updateLastFetched(false)
     } finally {
-      setIsLoading(false)
+      // Makes the delay equal to LOADING_TIME if the api takes less than the LOADING_TIME
+      // or 0 delay if api fetching took longer
+      const end = new Date()
+      const delay = LOADING_TIME - (end - start)
+      setTimeout(() => {
+        setIsLoading(false)
+      }, delay > 0 ? delay : 0)
     }
   }
 
@@ -140,7 +148,9 @@ const App = () => {
     if (!shouldFetch(lsCoins, limit)) {
       console.log("From local storage")
       setCoins(lsCoins)
-      setIsLoading(false)
+      setTimeout(() => {
+        setIsLoading(false)
+      }, LOADING_TIME)
       return
     }
 
@@ -181,15 +191,15 @@ const App = () => {
     <div>
       <h1>Crypto Dash!</h1>
 
-      {error && <pre>{JSON.stringify(error, null, 2)}</pre>}
-
-      {isLoading && <p>Fetching Coins...</p>}
-
       <div className="top-controls">
         <FilterInput filter={filter} setFilter={setFilter} />
         <LimitSelector limit={limit} setLimit={setLimit} />
         <SortSelector sortBy={sortBy} setSortBy={setSortBy} />
       </div>
+
+      {error && <pre>{JSON.stringify(error, null, 2)}</pre>}
+
+      {isLoading && <p>Fetching Coins...</p>}
 
       {!isLoading && !error && (
         <main className="grid">

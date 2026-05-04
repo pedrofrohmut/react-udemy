@@ -1,4 +1,5 @@
 import { Link } from "react-router"
+import Money from "./Money"
 
 const CoinCard = ({ coin }) => {
   if (!coin) return null
@@ -17,8 +18,7 @@ const CoinCard = ({ coin }) => {
         </div>
 
         <p>
-          <strong>Price:</strong>
-          {` $ ${coin.current_price.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+          <strong>Price:</strong> <Money amount={coin.current_price} />
         </p>
 
         {coin.price_change_percentage_24h && (
