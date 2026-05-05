@@ -6,7 +6,6 @@ import CoinCard from "../components/CoinCard"
 import Loading from "../components/Loading"
 
 const FIVE_MIN_MS = 5 * 60 * 1000
-const FETCH_INTERVAL = FIVE_MIN_MS
 const LOADING_TIME = 1500
 
 const getLastFetched = () => {
@@ -15,19 +14,8 @@ const getLastFetched = () => {
   return parseInt(lastFetched)
 }
 
-const updateLastFetched = (shouldKeep) => {
-  if (!shouldKeep) {
-    localStorage.removeItem("lastFetched")
-  } else {
-    localStorage.setItem("lastFetched", Date.now())
-  }
-}
-
-// LocalStorage is fresh enough get from it instead of fetching
-const isTimeToFetch = (lastFetched, fetchInterval) => {
-  if (!lastFetched) return true
-  const timeDiff = Date.now() - lastFetched
-  return timeDiff > fetchInterval
+const updateLSLastFetched = () => {
+  localStorage.setItem("lastFetched", Date.now())
 }
 
 const getLSCoins = () => {
@@ -54,32 +42,6 @@ const getLSLimit = () => {
   return parseInt(limit)
 }
 
-const limitChanged = (limit) => {
-  const lsLimit = getLSLimit()
-
-  if (!lsLimit) {
-    setLSLimit(limit)
-    return true
-  }
-
-  if (lsLimit !== limit) return true
-
-  return false
-}
-
-// Using localStorage as cache to avoid too much fetching
-// Update it acording to FETCH_INTERVAL
-const shouldFetch = (lsCoins, limit) => {
-  if (!lsCoins || lsCoins.length == 0) return true
-
-  const lastFetched = getLastFetched()
-  if (isTimeToFetch(lastFetched, FETCH_INTERVAL)) return true
-
-  if (limitChanged(limit) || lsCoins.length !== limit) return true
-
-  return false
-}
-
 const initLimit = () => {
   const lsLimit = getLSLimit()
   if (!lsLimit) return 10
@@ -92,7 +54,6 @@ const initLimit = () => {
   the url and the localStorage key and setting the time for the cache invalidate
 
   Exp: const { data, isLoading, error } = useCachedFetch(URL, LOCAL_STORAGE_KEY, CACHE_TIME)
-
 
   TODO: Create a interval that updates the pages every 5 min (FETCH_INTERVAL) if it is focus
   or checks the last fetched when the page gains focus. Keep page content fresh if it is focused
@@ -110,6 +71,31 @@ const HomePage = () => {
   const [filter, setFilter] = useState("")
   const [sortBy, setSortBy] = useState("market_cap_desc")
 
+  const isValidCache = (fetchInterval, limit) => {
+    const lsCoins = getLSCoins()
+    if (!lsCoins || lsCoins.length === 0) return false
+
+    const lastFetched = getLastFetched()
+    if (!lastFetched || Date.now() - lastFetched > fetchInterval) return false
+
+    const lsLimit = getLSLimit()
+    if (!lsLimit) {
+      setLSLimit(limit)
+    }
+    if (limit !== lsLimit) return false
+
+    console.log("Cache is valid")
+    return true
+  }
+
+  const fetchFromCache = () => {
+    setCoins(getLSCoins())
+    console.log("From local storage")
+    setTimeout(() => {
+      setIsLoading(false)
+    }, LOADING_TIME)
+  }
+
   const fetchAPI = async () => {
     const start = new Date()
     const url = `${import.meta.env.VITE_COINS_API_URL}&order=${sortBy}&per_page=${limit}&page=1&sparkline=false`
@@ -125,13 +111,12 @@ const HomePage = () => {
       setCoins(data)
       setLSCoins(data)
       setLSLimit(limit)
-      updateLastFetched(true)
+      updateLSLastFetched(start)
     } catch (err) {
       setError(err)
-      setCoins([])
+      setCoins(null)
       setLSCoins(null)
       setLSLimit(10)
-      updateLastFetched(false)
     } finally {
       // Makes the delay equal to LOADING_TIME if the api takes less than the LOADING_TIME
       // or 0 delay if api fetching took longer
@@ -145,25 +130,21 @@ const HomePage = () => {
     }
   }
 
-  const fetchCachedAPI = async () => {
-    const lsCoins = getLSCoins()
-
-    if (!shouldFetch(lsCoins, limit)) {
-      console.log("From local storage")
-      setCoins(lsCoins)
-      setTimeout(() => {
-        setIsLoading(false)
-      }, LOADING_TIME)
-      return
-    }
-
-    fetchAPI()
-  }
-
-  // TODO: Setup aborting with AbortController for the fetch call
   useEffect(() => {
-    fetchCachedAPI()
-  }, [limit, sortBy])
+    setIsLoading(true)
+
+    const fetchInterval = FIVE_MIN_MS
+    if (isValidCache(fetchInterval, limit)) {
+      fetchFromCache()
+    } else {
+      fetchAPI()
+    }
+  }, [limit])
+
+  const handleSetLimit = (e) => {
+    setLimit(e.target.value)
+    setLSLimit(e.target.value)
+  }
 
   const filteredAndSorted = coins
     .filter(
@@ -196,7 +177,7 @@ const HomePage = () => {
 
       <div className="top-controls">
         <FilterInput filter={filter} setFilter={setFilter} />
-        <LimitSelector limit={limit} setLimit={setLimit} />
+        <LimitSelector limit={limit} handleSetLimit={handleSetLimit} />
         <SortSelector sortBy={sortBy} setSortBy={setSortBy} />
       </div>
 
