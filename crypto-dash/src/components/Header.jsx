@@ -1,10 +1,10 @@
-const Header = () => {
-  return (
-    <div className="top-nav">
-      <a href="/">Home</a>
-      <a href="/about">About</a>
-    </div>
-  )
-}
+import { Link } from "react-router"
+
+const Header = () => (
+  <div className="top-nav">
+    <Link to="/">Home</Link>
+    <Link to="/about">About</Link>
+  </div>
+)
 
 export default Header
