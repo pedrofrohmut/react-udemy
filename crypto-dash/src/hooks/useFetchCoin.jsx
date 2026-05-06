@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getValidDelay } from "../utils"
+import { setupDelay } from "../utils"
 import constants from "../constants"
 
 const useFetchCoin = (coinId) => {
@@ -40,12 +40,7 @@ const useFetchCoin = (coinId) => {
       setData(null)
       setError(err)
     } finally {
-      // Calc the delay so the UI dont wait the API time + minDelayTime.
-      // Only the minDelay or API Time if bigger than the minDelay
-      const validDelay = getValidDelay(start, constants.minLoadingTime)
-      setTimeout(() => {
-        setIsLoading(false)
-      }, validDelay)
+      setupDelay(start, constants.minLoadingTime, setIsLoading)
     }
   }
 

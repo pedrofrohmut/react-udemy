@@ -12,3 +12,12 @@ export const getValidDelay = (start, loadingTime) => {
     console.log("ValidDelay:", validDelay)
     return validDelay
 }
+
+export const setupDelay = (start, loadingTime, setIsLoading) => {
+  // Calc the delay so the UI dont wait the API time + minDelayTime.
+  // Only the minDelay or API Time if bigger than the minDelay
+  const validDelay = getValidDelay(start, loadingTime)
+  setTimeout(() => {
+    setIsLoading(false)
+  }, validDelay)
+}

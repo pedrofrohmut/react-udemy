@@ -10,15 +10,15 @@ const CoinDetailsPage = () => {
   return (
     <div className="coin-details-container">
       <Link to="/">Back to Home</Link>
-      <h1 className="coin-details-title">{coin ? `${coin.name} (${coin.symbol.toUpperCase()})` : "Coin Details"}</h1>
       {isLoading && <Loading color="black" text="Loading Coin Details..." />}
 
       {!isLoading && error && <div className="error">Error: {error.message}</div>}
 
-      {!isLoading && !error && !coin && <p>No Data Found.</p>}
+      {!isLoading && !error && !coin && <h1>No Data Found.</h1>}
 
       {!isLoading && !error && coin && (
         <>
+          <h1 className="coin-details-title">{coin ? `${coin.name} (${coin.symbol.toUpperCase()})` : "Coin Details"}</h1>
           <img src={coin.image.large} alt={coin.name} className="coin-details-image" />
           <p>{coin.description.en.slice(0, 500)}</p>
           <div className="coin-details-info">
