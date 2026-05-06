@@ -12,6 +12,7 @@ import {
 import "chartjs-adapter-date-fns"
 import { useEffect, useState } from "react"
 import { formatMoney } from "../utils"
+import Loading from "./Loading"
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, TimeScale)
 
@@ -53,15 +54,16 @@ const CoinChart = ({ coinId }) => {
     TODO: Save to LS and only update when changing the coinId (for now)
    */
   const fetchPrices = async () => {
-    const url = `${import.meta.env.VITE_COIN_API_URL}/${coinId}/market_chart?vs_currency=usd&days=7`
+    /*
+      Ref Docs: https://docs.coingecko.com/v3.0.1/reference/coins-id-market-chart
+     */
+    const url = `${import.meta.env.VITE_COIN_API_URL}/${coinId}/market_chart?vs_currency=usd&days=7&x_cg_demo_api_key=${import.meta.env.VITE_API_KEY}`
     try {
       const response = await fetch(url)
       if (!response.ok) {
         throw new Error("")
       }
       const data = await response.json()
-
-      console.log("Chart Data:", data)
 
       const prices = data.prices.map((price) => ({
         x: price[0], // Timestamp
@@ -91,7 +93,7 @@ const CoinChart = ({ coinId }) => {
     fetchPrices()
   }, [])
 
-  if (isLoading) return null
+  if (isLoading) return <Loading color="black" text="Loading Chart Prices..." />
 
   return (
     <div style={{ marginTop: "30px" }}>

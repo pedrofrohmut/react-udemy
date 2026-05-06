@@ -97,8 +97,11 @@ const HomePage = () => {
   }
 
   const fetchAPI = async () => {
+    /*
+      Ref Docs: https://docs.coingecko.com/v3.0.1/reference/coins-markets
+     */
+    const url = `${import.meta.env.VITE_COINS_API_URL}&order=${sortBy}&per_page=${limit}&page=1&sparkline=false&x_cg_demo_api_key=${import.meta.env.VITE_API_KEY}`
     const start = new Date()
-    const url = `${import.meta.env.VITE_COINS_API_URL}&order=${sortBy}&per_page=${limit}&page=1&sparkline=false`
 
     try {
       const response = await fetch(url)

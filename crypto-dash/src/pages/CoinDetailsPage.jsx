@@ -28,8 +28,26 @@ const CoinDetailsPage = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  const fetchCoin = async () => {
-    const url = `${import.meta.env.VITE_COIN_API_URL}/${id}`
+  const isValidCache = () => {
+    const lsCoin = getLSCoin()
+    if (!lsCoin) return false
+
+    // TODO: lastFetched
+
+    return true
+  }
+
+  const fetchFromCache = () => {
+    // TODO: impl
+  }
+
+  const fetchAPI = async () => {
+    /*
+      Ref Docs: https://docs.coingecko.com/v3.0.1/reference/coins-id
+     */
+    const url = `${import.meta.env.VITE_COIN_API_URL}/${id}?x_cg_demo_api_key=${import.meta.env.VITE_API_KEY}`
+    const start = new Date()
+
     try {
       const response = await fetch(url)
       if (!response.ok) {
@@ -44,26 +62,47 @@ const CoinDetailsPage = () => {
       setCoin(null)
       setError(err)
     } finally {
+      // Makes the delay equal to LOADING_TIME if the api takes less than the LOADING_TIME
+      // or 0 delay if api fetching took longer
+      const end = new Date()
+      const delay = LOADING_TIME - (end - start)
+      const validDelay = delay > 0 ? delay : 0
+      console.log("Valid Delay: ", validDelay / 1000, " seconds")
       setTimeout(() => {
         setIsLoading(false)
-      }, LOADING_TIME)
+      }, validDelay)
     }
   }
 
   useEffect(() => {
     setIsLoading(true)
 
-    const lsCoin = getLSCoin()
-    if (!lsCoin) {
-      fetchCoin()
+    /*
+      TODO:
+      1. Make a 5 min cache for the coin. and the chart
+    */
+    const fetchInterval = 5 * 60 * 1000 // Five minutes
+    if (isValidCache(fetchInterval)) {
+      fetchFromCache()
     } else {
-      console.log("From local storage")
-      setCoin(lsCoin)
-      setTimeout(() => {
-        setIsLoading(false)
-      }, LOADING_TIME)
+      fetchAPI()
     }
-  }, [id])
+  }, [])
+
+  // useEffect(() => {
+  //   setIsLoading(true)
+
+  //   const lsCoin = getLSCoin()
+  //   if (!lsCoin) {
+  //     fetchCoin()
+  //   } else {
+  //     console.log("From local storage")
+  //     setCoin(lsCoin)
+  //     setTimeout(() => {
+  //       setIsLoading(false)
+  //     }, LOADING_TIME)
+  //   }
+  // }, [id])
 
   /*
     * TODO: Make Readmore Element to use in the coin.description
@@ -121,7 +160,7 @@ const CoinDetailsPage = () => {
             <h4>Last Updated: {new Date(coin.last_updated).toLocaleDateString()}</h4>
           </div>
 
-          <CoinChart coinId={coin.id} />
+          {/* <CoinChart coinId={coin.id} /> */}
 
           <div className="coin-details-links">
             {coin.links.homepage[0] && (
