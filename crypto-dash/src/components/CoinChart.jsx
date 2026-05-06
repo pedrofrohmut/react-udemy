@@ -10,9 +10,8 @@ import {
   TimeScale
 } from "chart.js"
 import "chartjs-adapter-date-fns"
-import { useEffect, useState } from "react"
-import { formatMoney } from "../utils"
 import Loading from "./Loading"
+import { formatMoney } from "../utils"
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, TimeScale)
 
@@ -46,58 +45,14 @@ const chartOptions = {
   }
 }
 
-const CoinChart = ({ coinId }) => {
-  const [chartData, setChartData] = useState(null)
-  const [isLoading, setIsLoading] = useState(true)
-
-  /*
-    TODO: Save to LS and only update when changing the coinId (for now)
-   */
-  const fetchPrices = async () => {
-    /*
-      Ref Docs: https://docs.coingecko.com/v3.0.1/reference/coins-id-market-chart
-     */
-    const url = `${import.meta.env.VITE_COIN_API_URL}/${coinId}/market_chart?vs_currency=usd&days=7&x_cg_demo_api_key=${import.meta.env.VITE_API_KEY}`
-    try {
-      const response = await fetch(url)
-      if (!response.ok) {
-        throw new Error("")
-      }
-      const data = await response.json()
-
-      const prices = data.prices.map((price) => ({
-        x: price[0], // Timestamp
-        y: price[1] // Price value
-      }))
-
-      // Format from: https://www.chartjs.org/docs/latest/getting-started/
-      setChartData({
-        datasets: [
-          {
-            label: "Price (USD)",
-            data: prices,
-            fill: true,
-            borderColor: "#007bff",
-            backgroundColor: "rgba(0, 123, 255, 0.1)",
-            pointRadius: 0,
-            tension: 0.3
-          }
-        ]
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchPrices()
-  }, [])
-
-  if (isLoading) return <Loading color="black" text="Loading Chart Prices..." />
-
+const CoinChart = ({ prices, isLoading }) => {
   return (
     <div style={{ marginTop: "30px" }}>
-      <Line data={chartData} options={chartOptions} />
+      {isLoading && <Loading color="black" text="Loading Prices Chart..." />}
+
+      {!isLoading && !prices && <h3>No data for the chart</h3>}
+
+      {!isLoading && prices && <Line data={prices} options={chartOptions} />}
     </div>
   )
 }

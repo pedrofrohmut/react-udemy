@@ -8,7 +8,7 @@ const useFetchCoin = (coinId) => {
   const [error, setError] = useState(null)
 
   const fetchFromCache = async () => {
-    console.log("Fetched from cache (Local Storage)")
+    console.log("Fetched coin details from cache (Local Storage)")
     const lsData = localStorage.getItem("coin")
     if (lsData) {
       setData(JSON.parse(lsData))
@@ -30,7 +30,7 @@ const useFetchCoin = (coinId) => {
       }
       const data = await response.json()
 
-      console.log("Fetched from API")
+      console.log("Fetched coin details from API")
       setData(data)
       setError(null)
       localStorage.setItem("coinId", coinId)

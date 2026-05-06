@@ -2,10 +2,13 @@ import { Link, useParams } from "react-router"
 import Loading from "../components/Loading"
 import Money from "../components/Money"
 import useFetchCoin from "../hooks/useFetchCoin"
+import useFetchPrices from "../hooks/useFetchPrices"
+import CoinChart from "../components/CoinChart"
 
 const CoinDetailsPage = () => {
-  const { id } = useParams()
-  const { coin, isLoading, error } = useFetchCoin(id)
+  const { id: coinId } = useParams()
+  const { coin, isLoading, error } = useFetchCoin(coinId)
+  const { prices, isLoading: isChartLoading } = useFetchPrices(coinId)
 
   return (
     <div className="coin-details-container">
@@ -18,7 +21,9 @@ const CoinDetailsPage = () => {
 
       {!isLoading && !error && coin && (
         <>
-          <h1 className="coin-details-title">{coin ? `${coin.name} (${coin.symbol.toUpperCase()})` : "Coin Details"}</h1>
+          <h1 className="coin-details-title">
+            {coin ? `${coin.name} (${coin.symbol.toUpperCase()})` : "Coin Details"}
+          </h1>
           <img src={coin.image.large} alt={coin.name} className="coin-details-image" />
           <p>{coin.description.en.slice(0, 500)}</p>
           <div className="coin-details-info">
@@ -52,7 +57,7 @@ const CoinDetailsPage = () => {
             <h4>Last Updated: {new Date(coin.last_updated).toLocaleDateString()}</h4>
           </div>
 
-          {/* <CoinChart coinId={coin.id} /> */}
+          <CoinChart prices={prices} isLoading={isChartLoading} />
 
           <div className="coin-details-links">
             {coin.links.homepage[0] && (
