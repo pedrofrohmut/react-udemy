@@ -21,3 +21,5 @@ export const setupDelay = (start, loadingTime, setIsLoading) => {
         setIsLoading(false)
     }, validDelay)
 }
+
+export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
