@@ -44,6 +44,16 @@ const initLimit = () => {
   return parseInt(lsLimit)
 }
 
+/*
+  TODO: Create a interval that updates the pages every 5 min (FETCH_INTERVAL) if
+  it is focus or checks the last fetched when the page gains focus. Keep page
+  content fresh if it is focused
+ */
+
+/*
+  Component description:
+  TODO: Add the description here explaining everything that this component does.
+*/
 const HomePage = () => {
   const [limit, setLimit] = useState(initLimit)
   const [filter, setFilter] = useState("")
