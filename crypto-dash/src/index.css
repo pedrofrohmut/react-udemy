@@ -29,9 +29,13 @@ a {
 }
 
 .grid {
+    --maxw: 350px; /* Max width for the grid items */
+    --gap: 1.5rem; /* Single place to change grid if needed */
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+    gap: var(--gap);
+    max-width: calc((3 * var(--maxw)) + (2 * var(--gap))); /* Limits the container to 3 items */
+    margin: 0 auto;d
 }
 
 .coin-card {
@@ -40,6 +44,8 @@ a {
     border-radius: 12px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease;
+    max-width: var(--maxw);
+    margin: 0 auto;
 }
 
 .coin-card:hover {
