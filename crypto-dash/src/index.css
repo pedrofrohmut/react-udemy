@@ -35,7 +35,7 @@ a {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: var(--gap);
     max-width: calc((3 * var(--maxw)) + (2 * var(--gap))); /* Limits the container to 3 items */
-    margin: 0 auto;d
+    margin: 0 auto;
 }
 
 .coin-card {
