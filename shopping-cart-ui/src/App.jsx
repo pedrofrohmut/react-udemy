@@ -1,46 +1,14 @@
-import { useEffect, useState } from "react"
 import ProductList from "./components/ProductList"
-
-const useFetchProducts = () => {
-  const [products, setProducts] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState(null)
-
-  const fetchProducts = async () => {
-    setIsLoading(true)
-    try {
-      const response = await fetch("/api/products")
-      if (!response.ok) {
-        throw new Error(`[${response.status}] Failed to fetch products`)
-      }
-      const data = await response.json()
-      setProducts(data)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    fetchProducts()
-  }, [])
-
-  return { products, isLoading, error }
-}
+import { ProductsProvider } from "./context/products-context"
 
 const App = () => {
-  const { products, isLoading, error } = useFetchProducts()
-
   return (
-    <div className="min-h-screen bg-gray-900 p-6">
-      <h1 className="text-3xl font-bold mb-6 text-gray-200">Product Catalog</h1>
-      {isLoading && <p>Loading...</p>}
-
-      {!isLoading && error && <div className="error">❌ {error}</div>}
-
-      {!isLoading && !error && <ProductList products={products} />}
-    </div>
+    <ProductsProvider>
+      <div className="min-h-screen bg-gray-900 p-6">
+        <h1 className="text-3xl font-bold mb-6 text-gray-200">Product Catalog</h1>
+        <ProductList />
+      </div>
+    </ProductsProvider>
   )
 }
 
