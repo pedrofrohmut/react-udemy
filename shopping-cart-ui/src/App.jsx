@@ -9,7 +9,7 @@ const useFetchProducts = () => {
   const fetchProducts = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch("http://localhost:5000/products")
+      const response = await fetch("/api/products")
       if (!response.ok) {
         throw new Error(`[${response.status}] Failed to fetch products`)
       }
@@ -39,9 +39,7 @@ const App = () => {
 
       {!isLoading && error && <div className="error">❌ {error}</div>}
 
-      {!isLoading && !error && (
-        <ProductList products={products} />
-      )}
+      {!isLoading && !error && <ProductList products={products} />}
     </div>
   )
 }
