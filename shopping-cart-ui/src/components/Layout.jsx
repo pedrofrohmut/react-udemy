@@ -1,9 +1,9 @@
-import { FaShoppingCart } from "react-icons/fa"
+import { FaShoppingCart, FaRegTrashAlt } from "react-icons/fa"
 import { useCartContext } from "../context/cart-context"
 import { useState } from "react"
 
 const Layout = ({ children }) => {
-  const { cart } = useCartContext()
+  const { cart, removeFromCart, clearCart } = useCartContext()
   const itemsCount = cart.reduce((acc, item) => acc + item.quantity, 0)
   const totalPrice = cart.reduce((acc, item) => acc + item.quantity * item.price, 0).toFixed(2)
 
@@ -43,6 +43,12 @@ const Layout = ({ children }) => {
                               <span>{item.quantity}</span> x <span>${item.price}</span>
                             </p>
                           </div>
+                          <button
+                            className="text-red-700 cursor-pointer p-1 hover:text-red-500"
+                            onClick={() => removeFromCart(item.id)}
+                          >
+                            <FaRegTrashAlt />
+                          </button>
                         </li>
                       ))}
                     </ul>
@@ -50,6 +56,12 @@ const Layout = ({ children }) => {
                       <span>Total:</span>
                       <span>${totalPrice}</span>
                     </div>
+                    <button
+                      className="cursor-pointer text-sm w-full bg-red-700 text-white font-semibold py-2 rounded mt-3 hover:underline hover:text-red-500"
+                      onClick={clearCart}
+                    >
+                      Clear Cart
+                    </button>
                   </>
                 )}
               </div>

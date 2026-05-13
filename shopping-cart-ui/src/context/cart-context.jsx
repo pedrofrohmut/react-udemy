@@ -25,7 +25,19 @@ export const CartProvider = ({ children }) => {
     })
   }
 
-  return <CartContext.Provider value={{ cart, addToCart }}>{children}</CartContext.Provider>
+  const removeFromCart = (productId) => {
+    if (confirm()) {
+      setCart((prev) => prev.filter((x) => x.id !== productId))
+    }
+  }
+
+  const clearCart = () => {
+    if (confirm()) {
+      setCart([])
+    }
+  }
+
+  return <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>{children}</CartContext.Provider>
 }
 
 export const useCartContext = () => useContext(CartContext)
