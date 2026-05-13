@@ -27,44 +27,50 @@ const Layout = ({ children }) => {
           </button>
 
           {isOpenDropdown && (
-            <div className="absolute right-0 mt-2 w-80 bg-white text-gray-800 border rounded shadow-lg z-50">
-              <div className="p-4">
-                <h2 className="font-semibold text-lg mb-2">Cart Items</h2>
-                {cart.length === 0 && <p className="text-gray-500 text-sm">Your cart is empty</p>}
-
-                {cart.length > 0 && (
-                  <>
-                    <ul className="max-h-60 overflow-y-auto devide-y devide-gray-200">
-                      {cart.map((item) => (
-                        <li key={item.id} className="flex justify-between items-center py-2">
-                          <div>
-                            <p className="semi-bold">{item.name}</p>
-                            <p className="text-sm text-gray-500">
-                              <span>{item.quantity}</span> x <span>${item.price}</span>
-                            </p>
-                          </div>
-                          <button
-                            className="text-red-700 cursor-pointer p-1 hover:text-red-500"
-                            onClick={() => removeFromCart(item.id)}
-                          >
-                            <FaRegTrashAlt />
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="mt-4 flex justify-between semi-bold">
-                      <span>Total:</span>
-                      <span>${totalPrice}</span>
-                    </div>
-                    <button
-                      className="cursor-pointer text-sm w-full bg-red-700 text-white font-semibold py-2 rounded mt-3 hover:underline hover:text-red-500"
-                      onClick={clearCart}
-                    >
-                      Clear Cart
-                    </button>
-                  </>
-                )}
+            <div className="absolute right-0 mt-2 w-80 bg-white text-gray-800 border rounded shadow-lg z-50 p-4">
+              <div className="flex justify-between items-center">
+                <h2 className="font-semibold text-lg">Cart Items</h2>
+                <button
+                  onClick={() => setIsOpenDropdown(false)}
+                  className="font-semibold px-1 text-red-600 cursor-pointer"
+                >
+                  X
+                </button>
               </div>
+              {cart.length === 0 && <p className="text-gray-500 text-sm">Your cart is empty</p>}
+
+              {cart.length > 0 && (
+                <>
+                  <ul className="max-h-60 overflow-y-auto devide-y devide-gray-200">
+                    {cart.map((item) => (
+                      <li key={item.id} className="flex justify-between items-center py-2">
+                        <div>
+                          <p className="semi-bold">{item.name}</p>
+                          <p className="text-sm text-gray-500">
+                            <span>{item.quantity}</span> x <span>${item.price}</span>
+                          </p>
+                        </div>
+                        <button
+                          className="text-red-700 cursor-pointer p-1 hover:text-red-500"
+                          onClick={() => removeFromCart(item.id)}
+                        >
+                          <FaRegTrashAlt />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-4 flex justify-between semi-bold">
+                    <span>Total:</span>
+                    <span>${totalPrice}</span>
+                  </div>
+                  <button
+                    className="cursor-pointer text-sm w-full bg-red-700 text-white font-semibold py-2 rounded mt-3 hover:underline hover:text-red-500"
+                    onClick={clearCart}
+                  >
+                    Clear Cart
+                  </button>
+                </>
+              )}
             </div>
           )}
         </div>
