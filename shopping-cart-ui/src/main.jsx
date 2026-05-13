@@ -6,11 +6,9 @@ import { ProductsProvider } from "./context/products-context.jsx"
 import { CartProvider } from "./context/cart-context.jsx"
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <ProductsProvider>
-      <CartProvider>
-        <App />
-      </CartProvider>
-    </ProductsProvider>
-  </StrictMode>
+  <ProductsProvider>
+    <CartProvider>
+      <App />
+    </CartProvider>
+  </ProductsProvider>
 )
