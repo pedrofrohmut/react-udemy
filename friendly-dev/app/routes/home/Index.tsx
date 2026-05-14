@@ -1,3 +1,4 @@
+import { useEffect } from "react"
 import type { Route } from "./+types/Index"
 
 export const meta = ({}: Route.MetaArgs) => {
@@ -5,7 +6,6 @@ export const meta = ({}: Route.MetaArgs) => {
 }
 
 const HomePage = () => {
-  console.log("Hello from home page...")
   return (
     <section>My App</section>
   )
