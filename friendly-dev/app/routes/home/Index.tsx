@@ -5,9 +5,10 @@ export const meta = ({}: Route.MetaArgs) => {
 }
 
 const Home = () => {
+  console.log("Hello, World!")
   return (
     <>
-      <h1 className="text-3xl text-red-500">My App</h1>
+      <h1 className="text-3xl text-red-200">My App</h1>
     </>
   )
 }
