@@ -39,7 +39,11 @@ const Navbar = () => {
       <div className="max-w-6xl mx-auto md:flex justify-between items-center">
         <div className="flex justify-between items-center px-6 py-4">
           {/* Logo */}
-          <NavLink to="/" className="flex items-center gap-2 text-lg font-bold text-blue-300">
+          <NavLink
+            to="/"
+            onClick={() => setIsMenuOpen(false)}
+            className="flex items-center gap-2 text-lg font-bold text-blue-300"
+          >
             <FaLaptopCode className="text-blue-400 text-xl" />
             <span>The Friendly Dev</span>
           </NavLink>

@@ -1,5 +1,5 @@
-import { useEffect } from "react"
 import type { Route } from "./+types/Index"
+import Hero from "../../components/Hero"
 
 export const meta = ({}: Route.MetaArgs) => {
   return [{ title: "The Friendly Dev" }, { name: "description", content: "Custom Website development" }]
@@ -7,7 +7,9 @@ export const meta = ({}: Route.MetaArgs) => {
 
 const HomePage = () => {
   return (
-    <section>My App</section>
+    <section>
+      <Hero name="Pedro Frohmut" />
+    </section>
   )
 }
 
