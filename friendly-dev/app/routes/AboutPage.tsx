@@ -14,7 +14,8 @@ const AboutPage = () => {
   }
 
   useEffect(() => {
-    if (window) { // In react router framework you dont need the if window
+    if (window) {
+      // In react router framework you dont need the if window
       console.log("ScrollX: ", window.scrollX)
     }
   }, [])

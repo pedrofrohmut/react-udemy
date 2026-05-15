@@ -10,9 +10,7 @@ const Hero = ({ name = "[NAME]", text = defaultText }) => {
         <span>Hey, I am {name}</span> <FaHandPeace />
       </h2>
 
-      <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-6">
-        {text}
-      </p>
+      <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-6">{text}</p>
 
       <div className="flex justify-center gap-4">
         <Link to="/projects" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-800 transition">
