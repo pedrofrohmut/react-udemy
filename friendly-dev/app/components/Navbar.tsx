@@ -12,7 +12,7 @@ const navClasses = ({ isActive }: NavStates) =>
   isActive ? "text-blue-400 font-semibold" : "transition hover:text-blue-400"
 
 const Navbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
 
   const handleToggleMenu = () => {
     setIsMenuOpen((prev: boolean) => !prev)
