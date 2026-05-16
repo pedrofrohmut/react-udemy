@@ -1,10 +1,20 @@
 import { useEffect, useState } from "react"
 import constants from "../constants"
-import { setupDelay } from "../utils"
+import { delayIt } from "../utils"
 
 const useFetchPrices = (coinId) => {
   const [prices, setPrices] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+
+  const isValidCache = () => {
+    const lastFetched = localStorage.getItem("pricesLastFetched")
+    if (!lastFetched || Date.now() - lastFetched > constants.fetchInterval) return false
+
+    const lsCoinId = localStorage.getItem("coinId")
+    if (!lsCoinId || lsCoinId !== coinId) return false
+
+    return true
+  }
 
   const fetchFromCache = () => {
     console.log("Fetched coin prices chart data from cache (Local Storage)")
@@ -61,25 +71,20 @@ const useFetchPrices = (coinId) => {
     }
   }
 
-  useEffect(() => {
-    const doFetching = () => {
-      setIsLoading(true)
+  const doFetching = async () => {
+    setIsLoading(true)
+    const start = Date.now()
 
-      let isValidCache = true
-
-      const lastFetched = localStorage.getItem("pricesLastFetched")
-      if (!lastFetched || Date.now() - lastFetched > constants.fetchInterval) isValidCache = false
-
-      const lsCoinId = localStorage.getItem("coinId")
-      if (!lsCoinId || lsCoinId !== coinId) isValidCache = false
-
-      if (isValidCache) {
-        fetchFromCache()
-      } else {
-        fetchFromAPI()
-      }
+    if (isValidCache()) {
+      fetchFromCache()
+    } else {
+      await fetchFromAPI()
     }
 
+    delayIt(start, setIsLoading)
+  }
+
+  useEffect(() => {
     doFetching()
   }, [coinId])
 

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import constants from "../constants"
+import { delayIt } from "../utils"
 
 const useFetchCoins = (limit, sortBy) => {
   const [coins, setCoins] = useState([])
@@ -22,7 +23,10 @@ const useFetchCoins = (limit, sortBy) => {
 
   const fetchFromCache = () => {
     console.log("Fetching from Cache")
-    setCoins(JSON.parse(localStorage.getItem("coins")) ?? null)
+    const lsCoins = localStorage.getItem("coins")
+    if (lsCoins) {
+      setCoins(JSON.parse(lsCoins))
+    }
   }
 
   const fetchFromAPI = async () => {
@@ -38,40 +42,31 @@ const useFetchCoins = (limit, sortBy) => {
       console.log("Fetching from API")
       setCoins(data)
       localStorage.setItem("coins", JSON.stringify(data))
-      localStorage.setItem("coinsLastFetched", Date.now())
       localStorage.setItem("coinsLimit", limit)
+      localStorage.setItem("coinsLastFetched", Date.now())
     } catch (err) {
       setError(err)
     }
   }
 
-  useEffect(() => {
-    const doFetching = async () => {
-      setIsLoading(true)
-      const start = Date.now()
+  const doFetching = async () => {
+    setIsLoading(true)
+    const start = Date.now()
 
-      if (isValidCache()) {
-        fetchFromCache()
-      } else {
-        await fetchFromAPI()
-      }
-
-      const elapsed = Date.now() - start
-      const delay = elapsed < constants.minLoadingTime ? constants.minLoadingTime - elapsed : 0
-      console.log("Delay:", delay)
-      setTimeout(() => {
-        setIsLoading(false)
-      }, delay)
+    if (isValidCache()) {
+      fetchFromCache()
+    } else {
+      await fetchFromAPI()
     }
 
+    delayIt(start, setIsLoading)
+  }
+
+  useEffect(() => {
     doFetching()
   }, [limit])
 
-  return {
-    coins,
-    isLoading,
-    error
-  }
+  return { coins, isLoading, error }
 }
 
 export default useFetchCoins
