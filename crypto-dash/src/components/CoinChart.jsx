@@ -12,6 +12,7 @@ import {
 import "chartjs-adapter-date-fns"
 import Loading from "./Loading"
 import { formatMoney } from "../utils"
+import useFetchPrices from "../hooks/useFetchPrices"
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, TimeScale)
 
@@ -45,7 +46,9 @@ const chartOptions = {
   }
 }
 
-const CoinChart = ({ prices, isLoading }) => {
+const CoinChart = ({ coinId }) => {
+  const { prices, isLoading } = useFetchPrices(coinId)
+
   return (
     <div style={{ marginTop: "30px" }}>
       {isLoading && <Loading color="black" text="Loading Prices Chart..." />}

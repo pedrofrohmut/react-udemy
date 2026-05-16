@@ -238,6 +238,16 @@ a {
     text-decoration: underline;
 }
 
+.btn-load-prices {
+    padding: 0.8rem 2rem;
+    border-radius: 0.8em;
+    border: 1px solid #333;
+    background-color: #fff;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin: 1rem auto;
+}
+
 /* Modal */
 .modal-overlay {
     position: fixed;

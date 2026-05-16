@@ -2,13 +2,19 @@ import { Link, useParams } from "react-router"
 import Loading from "../components/Loading"
 import Money from "../components/Money"
 import useFetchCoin from "../hooks/useFetchCoin"
-import useFetchPrices from "../hooks/useFetchPrices"
-import CoinChart from "../components/CoinChart"
+import { lazy, Suspense, useState } from "react"
+
+const CoinChart = lazy(() => import("../components/CoinChart"))
 
 const CoinDetailsPage = () => {
   const { id: coinId } = useParams()
   const { coin, isLoading, error } = useFetchCoin(coinId)
-  const { prices, isLoading: isChartLoading } = useFetchPrices(coinId)
+
+  const [isChartOpen, setIsChartOpen] = useState(false)
+
+  const handleOpenChart = () => {
+    setIsChartOpen(true)
+  }
 
   /*
    * TODO: Make Readmore Element to use in the coin.description
@@ -65,7 +71,17 @@ const CoinDetailsPage = () => {
             <h4>Last Updated: {new Date(coin.last_updated).toLocaleDateString()}</h4>
           </div>
 
-          <CoinChart prices={prices} isLoading={isChartLoading} />
+          {!isChartOpen && (
+            <button onClick={handleOpenChart} className="btn-load-prices">
+              Load Prices Chart
+            </button>
+          )}
+
+          {isChartOpen && (
+            <Suspense fallaback={<Loading color="black" text="Loading Prices Chart..." />}>
+              <CoinChart coinId={coinId} />
+            </Suspense>
+          )}
 
           <div className="coin-details-links">
             {coin.links.homepage[0] && (

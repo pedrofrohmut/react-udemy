@@ -21,9 +21,6 @@ const useFetchPrices = (coinId) => {
     const lsPrices = localStorage.getItem("prices")
     if (lsPrices) {
       setPrices(JSON.parse(lsPrices))
-      setTimeout(() => {
-        setIsLoading(false)
-      }, constants.minLoadingTime)
     }
   }
 
@@ -31,7 +28,6 @@ const useFetchPrices = (coinId) => {
     // Ref Docs: https://docs.coingecko.com/v3.0.1/reference/coins-id-market-chart
     const url = `${import.meta.env.VITE_COIN_API_URL}/${coinId}/market_chart?vs_currency=usd&days=7&x_cg_demo_api_key=${import.meta.env.VITE_API_KEY}`
 
-    const start = Date.now()
     try {
       const response = await fetch(url)
       if (!response.ok) {
@@ -64,10 +60,7 @@ const useFetchPrices = (coinId) => {
       localStorage.setItem("prices", JSON.stringify(chartData))
       localStorage.setItem("pricesLastFetched", Date.now())
     } catch (err) {
-      setPrices(null)
       console.log(err)
-    } finally {
-      setupDelay(start, constants.minLoadingTime, setIsLoading)
     }
   }
 
@@ -88,10 +81,7 @@ const useFetchPrices = (coinId) => {
     doFetching()
   }, [coinId])
 
-  return {
-    prices,
-    isLoading
-  }
+  return { prices, isLoading }
 }
 
 export default useFetchPrices
