@@ -1,5 +1,7 @@
 import { Link } from "react-router"
+
 import type { Project } from "../types"
+import { formatDate } from "../utils"
 
 type Props = {
   project: Project
@@ -18,7 +20,7 @@ const ProjectCard = ({ project }: Props) => {
 
           <div className="flex justify-between items-center text-sm text-gray-400">
             <span>{category}</span>
-            <span>{new Date(date).toLocaleDateString("pt-BR")}</span>
+            <span>{formatDate(date)}</span>
           </div>
         </div>
       </div>
