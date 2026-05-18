@@ -3,11 +3,11 @@ import { Link } from "react-router"
 import type { Project } from "../types"
 import { formatDate } from "../utils"
 
-type Props = {
+type ProjectCardProps = {
   project: Project
 }
 
-const ProjectCard = ({ project }: Props) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   const { id, title, image, description, category, date } = project
   return (
     <Link to={`/projects/${id}`} className="block transform transition duration-300 hover:scale-[1.02]">

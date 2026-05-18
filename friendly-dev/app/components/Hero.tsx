@@ -3,7 +3,12 @@ import { Link } from "react-router"
 
 const defaultText = "I build friendly web expirences and help others become confident, modern developers."
 
-const Hero = ({ name = "[NAME]", text = defaultText }) => {
+type HeroProps = {
+  name: string
+  text: string
+}
+
+const Hero: React.FC<HeroProps> = ({ name = "[NAME]", text = defaultText }) => {
   return (
     <header className="text-center py-20 px-4 bg-gray-900 text-white transition-colors duration-300">
       <h2 className="text-4xl font-bold mb-4 flex justify-center gap-4 items-center">

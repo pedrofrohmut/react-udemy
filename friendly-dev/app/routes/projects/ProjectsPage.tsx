@@ -2,38 +2,14 @@ import type { Project } from "../../types"
 import type { Route } from "./+types/ProjectsPage"
 import ProjectCard from "../../components/ProjectCard"
 import { useState } from "react"
+import Pagination from "../../components/Pagination"
 
 type ProjectsData = { projects: Array<Project> }
 
-export const loader = async ({ request }: Route.LoaderArgs): Promise<ProjectsData> => {
+export const loader = async ({}: Route.LoaderArgs): Promise<ProjectsData> => {
   const response = await fetch("http://localhost:5000/projects")
   const data = await response.json()
   return { projects: data }
-}
-
-type PaginationProps = {
-  numberOfPages: number
-  currentPage: number
-  handlePageChange: (n: number) => void
-}
-
-const Pagination = ({ numberOfPages, currentPage, handlePageChange }: PaginationProps) => {
-  const pageNumbers = Array.from({ length: numberOfPages }, (_, i) => i + 1)
-  return (
-    <div className="flex justify-center gap-2 mt-8">
-      {pageNumbers.map((n) => (
-        <button
-          key={n}
-          className={`px-3 py-1 cursor-pointer rounded ${
-            currentPage === n ? "bg-blue-700 text-white" : "bg-gray-700 text-gray-200"
-          }`}
-          onClick={() => handlePageChange(n)}
-        >
-          {n}
-        </button>
-      ))}
-    </div>
-  )
 }
 
 const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
@@ -41,7 +17,7 @@ const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
 
   const [currentPage, setCurrentPage] = useState<number>(1)
 
-  const projectsPerPage = 4
+  const projectsPerPage = 10
   const totalPages = Math.ceil(projects.length / projectsPerPage)
 
   const indexOfLast = currentPage * projectsPerPage
@@ -60,9 +36,7 @@ const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
           <ProjectCard key={project.id} project={project} />
         ))}
       </div>
-      {totalPages > 1 && (
-        <Pagination numberOfPages={totalPages} currentPage={currentPage} handlePageChange={handlePageChange} />
-      )}
+      <Pagination numberOfPages={totalPages} currentPage={currentPage} handlePageChange={handlePageChange} />
     </>
   )
 }
