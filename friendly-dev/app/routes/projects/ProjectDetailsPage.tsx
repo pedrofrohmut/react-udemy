@@ -20,6 +20,7 @@ export const HydrateFallback = () => <div>Loading...</div>
 
 const ProjectDetailsPage = ({ loaderData }: Route.ComponentProps) => {
   const project = loaderData
+
   return (
     <>
       <Link to="/projects" className="flex items-center gap-2 text-blue-500 hover:text-blue-300 mb-6 transition">
