@@ -3,6 +3,7 @@ import type { Route } from "./+types/ProjectsPage"
 import ProjectCard from "../../components/ProjectCard"
 import { useState } from "react"
 import Pagination from "../../components/Pagination"
+import { AnimatePresence, motion } from "framer-motion"
 
 type ProjectsData = { projects: Array<Project> }
 
@@ -30,7 +31,7 @@ const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
   }
 
   // Paginate filtered projects
-  const projectsPerPage = 4
+  const projectsPerPage = 10
   const totalPages = Math.ceil(filteredProjects.length / projectsPerPage)
   const indexOfLast = currentPage * projectsPerPage
   const indexOfFirst = indexOfLast - projectsPerPage
@@ -61,11 +62,15 @@ const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
           ))}
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
-        {currentProjects.map((project: Project) => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
-      </div>
+      <AnimatePresence mode="wait">
+        <motion.div layout className="grid gap-6 sm:grid-cols-2">
+          {currentProjects.map((project: Project) => (
+            <motion.div key={project.id} layout>
+              <ProjectCard project={project} />
+            </motion.div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
 
       <Pagination numberOfPages={totalPages} currentPage={currentPage} handlePageChange={handlePageChange} />
     </>
