@@ -1,6 +1,6 @@
-import type { Project } from "../types"
+import type { Project } from "../../types"
 import type { Route } from "./+types/ProjectsPage"
-import ProjectCard from "../components/ProjectCard"
+import ProjectCard from "../../components/ProjectCard"
 
 type ProjectsData = { projects: Array<Project> }
 
