@@ -5,7 +5,7 @@ const defaultText = "I build friendly web expirences and help others become conf
 
 type HeroProps = {
   name: string
-  text: string
+  text?: string
 }
 
 const Hero: React.FC<HeroProps> = ({ name = "[NAME]", text = defaultText }) => {
