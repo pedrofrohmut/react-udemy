@@ -5,19 +5,18 @@ import { useState } from "react"
 import Pagination from "../../components/Pagination"
 import { AnimatePresence, motion } from "framer-motion"
 
-type ProjectsData = { projects: Array<Project> }
-
-export const loader = async ({}: Route.LoaderArgs): Promise<ProjectsData> => {
-  const response = await fetch("http://localhost:5000/projects")
-  const data = await response.json()
-  return { projects: data }
+export const loader = async ({}: Route.LoaderArgs): Promise<Array<Project>> => {
+  const isDevelopment = import.meta.env.DEV
+  const url = isDevelopment ? `${import.meta.env.VITE_API_URL}/projects` : "production-url"
+  const response = await fetch(url)
+  return await response.json()
 }
 
 const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All")
   const [currentPage, setCurrentPage] = useState<number>(1)
 
-  const { projects } = loaderData as ProjectsData
+  const projects = loaderData
 
   // Extract unique categories from projects + "All"
   const categories: Array<string> = ["All", ...new Set(projects.map((project) => project.category))]

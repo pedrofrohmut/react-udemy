@@ -7,7 +7,7 @@ import { formatDate } from "../../utils"
 
 export const clientLoader = async ({ params }: Route.ClientLoaderArgs): Promise<Project> => {
   const isDevelopment = import.meta.env.DEV
-  const url = isDevelopment ? `http://localhost:5000/projects/${params.id}` : "production-url"
+  const url = isDevelopment ? `${import.meta.env.VITE_API_URL}/projects/${params.id}` : "production-url"
   const response = await fetch(url)
   if (!response.ok) {
     throw new Response("Project not found", { status: 404 })
