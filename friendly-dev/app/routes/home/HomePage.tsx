@@ -1,6 +1,7 @@
-import FeaturedProjects from "../../components/FeaturedProjects"
 import type { Route } from "./+types/HomePage"
 import type { Project } from "../../types"
+import AboutPreview from "../../components/AboutPreview"
+import FeaturedProjects from "../../components/FeaturedProjects"
 
 export const meta = ({}: Route.MetaArgs) => {
   return [{ title: "The Friendly Dev" }, { name: "description", content: "Custom Website development" }]
@@ -19,6 +20,7 @@ const HomePage: React.FC<Route.ComponentProps> = ({ loaderData }) => {
   return (
     <>
       <FeaturedProjects projects={projects} count={2} />
+      <AboutPreview />
     </>
   )
 }
