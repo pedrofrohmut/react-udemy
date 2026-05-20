@@ -7,7 +7,7 @@ export const meta = ({}: Route.MetaArgs) => {
   return [{ title: "The Friendly Dev" }, { name: "description", content: "Custom Website development" }]
 }
 
-export const loader = async ({}: Route.LoaderArgs): Promise<Array<Project>>  => {
+export const loader = async ({}: Route.LoaderArgs): Promise<Array<Project>> => {
   const isDevelopment = import.meta.env.DEV
   const url = isDevelopment ? `${import.meta.env.VITE_API_URL}/projects` : "production-url"
   const response = await fetch(url)

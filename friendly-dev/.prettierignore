@@ -1,0 +1,5 @@
+node_modules/
+app/posts/
+public/
+data/
+package-lock.json

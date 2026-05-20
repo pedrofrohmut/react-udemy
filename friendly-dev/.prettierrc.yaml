@@ -8,3 +8,9 @@ bracketSpacing: true
 bracketSameLine: false
 arrowParens: "always"
 endOfLine: "lf"
+
+overrides:
+  - files:
+      - "*.css"
+    options:
+      tabWidth: 4

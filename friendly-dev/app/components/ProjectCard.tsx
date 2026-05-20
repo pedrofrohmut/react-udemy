@@ -7,15 +7,15 @@ type ProjectCardProps = {
   project: Project
 }
 
-    //<Link to={`/projects/${id}`} className="block transform transition duration-300 hover:scale-[1.02]">
-
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   const { id, title, image, description, category, date } = project
   return (
     <Link to={`/projects/${id}`} className="block">
-      <div className="bg-gray-800 border-2 border-gray-700 rounded-lg overflow-hidden
+      <div
+        className="bg-gray-800 border-2 border-gray-700 rounded-lg overflow-hidden
         shadow-sm transition hover:shadow-md hover:border-gray-200 transition-border
-        ease-in duration-500">
+        ease-in duration-500"
+      >
         <img alt={title} src={image} className="w-full h-40 object-cover" />
         <div className="p-5">
           <h3 className="text-3xl font-semibold text-blue-400 mb-1">{title}</h3>
