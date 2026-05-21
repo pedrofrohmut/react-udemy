@@ -8,6 +8,7 @@ const routes = [
     route("projects", "routes/projects/ProjectsPage.tsx"),
     route("projects/:id", "routes/projects/ProjectDetailsPage.tsx"),
     route("blog", "routes/blog/BlogPage.tsx"),
+    route("blog/:slug", "routes/blog/BlogPostDetailsPage.tsx"),
     route("*", "routes/NotFoundPage.tsx")
   ])
 ] satisfies RouteConfig

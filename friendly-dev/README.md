@@ -9,3 +9,4 @@
 - [JSON Server](https://github.com/typicode/json-server)
 - [Motion (Animations)](https://motion.dev/docs)
 - [Unicode Characters](https://www.vertex42.com/ExcelTips/unicode-symbols.html)
+- [React Markdown](https://github.com/remarkjs/react-markdown)
