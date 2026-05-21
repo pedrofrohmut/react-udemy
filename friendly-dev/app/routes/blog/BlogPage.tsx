@@ -8,7 +8,8 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<Array<PostM
   if (!response.ok) {
     throw new Error("Fail to fetch data from: /posts-meta.json")
   }
-  return await response.json()
+  const data: PostMeta = await response.json()
+  return data.sort((a, b) => new Date(a.date).getTime - new Date(b.date).getTime())
 }
 
 const BlogPage = ({ loaderData }: Route.ComponentProps) => {
