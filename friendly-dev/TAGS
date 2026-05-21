@@ -1,6 +1,6 @@
 
-app/utils.ts,112
-export const formatDate = (dateToFmt: string): string => new Date(dateToFmt).toLocaleDateString(formatDate1,0
+app/utils.ts,74
+export const formatDate = (dateToFmt: string): string => {formatDate1,0
 
 app/types.ts,77
 export type Project = {Project1,0

@@ -1,5 +1,5 @@
 export const formatDate = (dateToFmt: string): string => {
-  const options = {
+  const options: any = {
     weekday: "long",
     year: "2-digit",
     month: "short",
