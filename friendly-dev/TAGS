@@ -1,0 +1,59 @@
+
+app/utils.ts,112
+export const formatDate = (dateToFmt: string): string => new Date(dateToFmt).toLocaleDateString(formatDate1,0
+
+app/types.ts,77
+export type Project = {Project1,0
+export type PostMeta = {PostMeta12,162
+
+app/root.tsx,0
+
+app/posts/css-utility-vs-component.md,0
+
+app/posts/writing-clean-code.md,0
+
+app/posts/deploying-fullstack-apps.md,0
+
+app/posts/react-hooks-overview.md,0
+
+app/posts/api-authentication-strategies.md,0
+
+app/components/ProjectCard.tsx,0
+
+app/components/PostCard.tsx,0
+
+app/components/AboutPreview.tsx,0
+
+app/components/Hero.tsx,0
+
+app/components/Pagination.tsx,0
+
+app/components/FeaturedProjects.tsx,0
+
+app/components/Navbar.tsx,0
+
+app/app.css,0
+
+app/routes/contact/ContactPage.tsx,0
+
+app/routes/HomePage.tsx,0
+
+app/routes/projects/ProjectsPage.tsx,0
+
+app/routes/projects/ProjectDetailsPage.tsx,0
+
+app/routes/NotFoundPage.tsx,0
+
+app/routes/blog/BlogPage.tsx,0
+
+app/routes/blog/BlogPostDetailsPage.tsx,0
+
+app/routes/about/AboutPage.tsx,0
+
+app/routes/layouts/HomeLayout.tsx,0
+
+app/routes/layouts/MainLayout.tsx,0
+
+app/routes.ts,127
+import { type RouteConfig, index, route, layout } from "@react-router/dev/routes"RouteConfig1,0
+const routes = [routes3,83
