@@ -2,11 +2,15 @@ import type { Project } from "../types"
 import ProjectCard from "./ProjectCard"
 
 type FeaturedProjectsProps = {
-  projects: Array<Project>
+  projects: Array<Project> | null
   count: number
 }
 
-const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects, count }) => {
+const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects, count = 2 }) => {
+  if (!projects || !Array.isArray(projects) || !count) {
+    return null
+  }
+
   const featured = projects.filter((p) => p.featured).slice(0, count)
 
   return (

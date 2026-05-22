@@ -9,8 +9,13 @@ type LatestPostsProps = {
 }
 
 const LatestPosts: React.FC<LatestPostsProps> = ({ posts, limit = 3 }) => {
+  if (!posts || !Array.isArray(posts) || !limit) {
+    return null
+  }
+
   const sorted = sortedPostsByDateDesc(posts)
   const latest = sorted.slice(0, limit)
+
   return (
     <>
       <h2 className="text-2xl font-bold mb-6 text-white mt-12">🔥 Latest Posts</h2>

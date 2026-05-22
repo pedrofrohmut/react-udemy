@@ -11,22 +11,36 @@ type LoaderData = {
 }
 
 export const loader = async ({}: Route.LoaderArgs): Promise<LoaderData> => {
-  const isDevelopment = import.meta.env.DEV
-  const url = isDevelopment ? `${import.meta.env.VITE_API_URL}/projects` : "production-url"
+  const url = `${import.meta.env.VITE_API_URL}/api/projects`
 
   try {
     const response = await fetch(url)
+
     if (!response.ok) {
-      throw new Error("Failed to fetch projects from API")
+      throw new Error("Fetch response not ok")
     }
+
     const projects = await response.json()
+
+    const uiProjects = projects.data.map(p => ({
+      id: p.id,
+      title: p.title,
+      description: p.description,
+      image: "",
+      url: p.url,
+      date: p.date,
+      category: p.category,
+      featured: p.isFeatured,
+    }))
+
     return {
       error: null,
-      projects
+      projects: uiProjects,
     }
   } catch (err: any) {
     const fetchErr = new Error(`Error to fetch projects from API: ${err.message || ""}`)
     fetchErr.stack = err.stack || ""
+
     return {
       projects: null,
       error: fetchErr

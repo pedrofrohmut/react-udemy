@@ -15,18 +15,31 @@ type LoaderData = {
 }
 
 export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData> => {
-  const isDevelopment = import.meta.env.DEV
-  const projectsUrl = isDevelopment ? `${import.meta.env.VITE_API_URL}/projects` : "production-url"
+  const projectsUrl = `${import.meta.env.VITE_API_URL}/api/projects`
   const postsUrl = new URL("/posts-meta.json", request.url)
 
   try {
     const [projectsResponse, postsResponse] = await Promise.all([fetch(projectsUrl), fetch(postsUrl)])
+
     if (!projectsResponse.ok || !postsResponse.ok) {
-      throw new Error("Failed to fetch projects and/or posts")
+      throw new Error("Fetch response not ok")
     }
+
     const [projects, posts] = await Promise.all([projectsResponse.json(), postsResponse.json()])
+
+    const uiProjects = projects.data.map(p => ({
+      id: p.id,
+      title: p.title,
+      description: p.description,
+      image: "",
+      url: p.url,
+      date: p.date,
+      category: p.category,
+      featured: p.isFeatured,
+    }))
+
     return {
-      projects,
+      projects: uiProjects,
       posts,
       error: null
     }
@@ -44,12 +57,14 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData>
 const HomePage: React.FC<Route.ComponentProps> = ({ loaderData }) => {
   const { projects, posts, error } = loaderData
 
+  if (error) return null
+
   return (
     <>
       {error && <div className="">🚫 {error.message}</div>}
-      {!error && projects && <FeaturedProjects projects={projects} count={2} />}
+      {!error && <FeaturedProjects projects={projects} count={2} />}
       <AboutPreview />
-      {!error && posts && <LatestPosts posts={posts} limit={3} />}
+      {!error && <LatestPosts posts={posts} limit={3} />}
     </>
   )
 }
