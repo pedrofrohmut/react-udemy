@@ -11,7 +11,8 @@ type LoaderData = {
 }
 
 export const loader = async ({}: Route.LoaderArgs): Promise<LoaderData> => {
-  const url = `${import.meta.env.VITE_API_URL}/api/projects`
+  // Populate param is to get image info
+  const url = `${import.meta.env.VITE_API_URL}/projects?populate=*`
 
   try {
     const response = await fetch(url)
@@ -26,7 +27,7 @@ export const loader = async ({}: Route.LoaderArgs): Promise<LoaderData> => {
       id: p.id,
       title: p.title,
       description: p.description,
-      image: "",
+      image: `${import.meta.env.VITE_STRAPI_URL}${p.image.url}`,
       url: p.url,
       date: p.date,
       category: p.category,
@@ -87,7 +88,7 @@ const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
 
   return (
     <>
-      <h2 className="text-3xl font-bold text-white mb-8">Projects</h2>
+      <h2 className="text-3xl font-bold text-white mb-8">🧾 Projects</h2>
 
       {error && <div className="">🚫 {error.message}</div>}
 

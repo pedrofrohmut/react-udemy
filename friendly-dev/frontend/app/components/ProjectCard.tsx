@@ -16,7 +16,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
         shadow-sm transition hover:shadow-md hover:border-gray-200 transition-border
         ease-in duration-500"
       >
-        <img alt={title} src={image} className="w-full h-40 object-cover" />
+        {image && <img alt={title} src={image} className="w-full h-40 object-cover" />}
+
         <div className="p-5">
           <h3 className="text-3xl font-semibold text-blue-400 mb-1">{title}</h3>
 

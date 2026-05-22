@@ -15,7 +15,7 @@ type LoaderData = {
 }
 
 export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData> => {
-  const projectsUrl = `${import.meta.env.VITE_API_URL}/api/projects`
+  const projectsUrl = `${import.meta.env.VITE_API_URL}/projects`
   const postsUrl = new URL("/posts-meta.json", request.url)
 
   try {
