@@ -1,3 +1,5 @@
+import type { PostMeta } from "./types"
+
 export const formatDate = (dateToFmt: string): string => {
   const options: any = {
     weekday: "long",
@@ -7,3 +9,8 @@ export const formatDate = (dateToFmt: string): string => {
   }
   return new Date(dateToFmt).toLocaleDateString("pt-BR", options)
 }
+
+// Descending b - a
+// StructuredClone is for array deep copy
+export const sortedPostsByDateDesc = (posts: Array<PostMeta>): Array<PostMeta> =>
+  structuredClone(posts).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())

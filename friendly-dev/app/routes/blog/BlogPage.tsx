@@ -2,6 +2,7 @@ import { useState } from "react"
 import PostCard from "../../components/PostCard"
 import Pagination from "../../components/Pagination"
 import PostsFilter from "../../components/PostsFilter"
+import { sortedPostsByDateDesc } from "../../utils"
 
 import type { Route } from "./+types/BlogPage"
 import type { PostMeta } from "~/types"
@@ -13,7 +14,7 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<Array<PostM
     throw new Error("Fail to fetch data from: /posts-meta.json")
   }
   const data: Array<PostMeta> = await response.json()
-  return data.sort((a: PostMeta, b: PostMeta) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  return sortedPostsByDateDesc(data)
 }
 
 const BlogPage = ({ loaderData }: Route.ComponentProps) => {

@@ -1,6 +1,7 @@
 
-app/utils.ts,74
-export const formatDate = (dateToFmt: string): string => {formatDate1,0
+app/utils.ts,186
+export const formatDate = (dateToFmt: string): string => {formatDate3,41
+export const sortedPostsByDateDesc = (posts: Array<PostMeta>): Array<PostMeta> =>sortedPostsByDateDesc15,341
 
 app/types.ts,77
 export type Project = {Project1,0
@@ -20,6 +21,8 @@ app/posts/api-authentication-strategies.md,0
 
 app/components/ProjectCard.tsx,0
 
+app/components/LatestPosts.tsx,0
+
 app/components/PostCard.tsx,0
 
 app/components/AboutPreview.tsx,0
@@ -27,6 +30,8 @@ app/components/AboutPreview.tsx,0
 app/components/Hero.tsx,0
 
 app/components/Pagination.tsx,0
+
+app/components/PostsFilter.tsx,0
 
 app/components/FeaturedProjects.tsx,0
 

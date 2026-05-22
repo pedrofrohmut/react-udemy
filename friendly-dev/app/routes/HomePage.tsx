@@ -1,26 +1,42 @@
 import type { Route } from "./+types/HomePage"
-import type { Project } from "../types"
+import type { Project, PostMeta } from "../types"
 import AboutPreview from "../components/AboutPreview"
 import FeaturedProjects from "../components/FeaturedProjects"
+import LatestPosts from "../components/LatestPosts"
 
 export const meta = ({}: Route.MetaArgs) => {
   return [{ title: "The Friendly Dev" }, { name: "description", content: "Custom Website development" }]
 }
 
-export const loader = async ({}: Route.LoaderArgs): Promise<Array<Project>> => {
+type LoaderData = {
+  projects: Array<Project>
+  posts: Array<PostMeta>
+}
+
+export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData> => {
   const isDevelopment = import.meta.env.DEV
-  const url = isDevelopment ? `${import.meta.env.VITE_API_URL}/projects` : "production-url"
-  const response = await fetch(url)
-  return await response.json()
+  const projectsUrl = isDevelopment ? `${import.meta.env.VITE_API_URL}/projects` : "production-url"
+  const postsUrl = new URL("/posts-meta.json", request.url)
+
+  const [projectsResponse, postsResponse] = await Promise.all([fetch(projectsUrl), fetch(postsUrl)])
+
+  if (!projectsResponse.ok || !postsResponse.ok) {
+    throw new Error("Failed to fetch projects and/or posts")
+  }
+
+  const [projects, posts] = await Promise.all([projectsResponse.json(), postsResponse.json()])
+
+  return { projects, posts }
 }
 
 const HomePage: React.FC<Route.ComponentProps> = ({ loaderData }) => {
-  const projects = loaderData
+  const { projects, posts } = loaderData
 
   return (
     <>
       <FeaturedProjects projects={projects} count={2} />
       <AboutPreview />
+      <LatestPosts posts={posts} limit={3} />
     </>
   )
 }
