@@ -10,3 +10,5 @@
 - [Motion (Animations)](https://motion.dev/docs)
 - [Unicode Characters](https://www.vertex42.com/ExcelTips/unicode-symbols.html)
 - [React Markdown](https://github.com/remarkjs/react-markdown)
+- [Strapi (Headless CMS)](https://strapi.io/)
+- [Neon (Postgres Database)](https://neon.com/)
