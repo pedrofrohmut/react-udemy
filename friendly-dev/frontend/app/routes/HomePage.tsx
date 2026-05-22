@@ -27,7 +27,7 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData>
 
     const [projects, posts] = await Promise.all([projectsResponse.json(), postsResponse.json()])
 
-    const uiProjects = projects.data.map(p => ({
+    const uiProjects = projects.data.map((p) => ({
       id: p.id,
       title: p.title,
       description: p.description,
@@ -35,7 +35,7 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData>
       url: p.url,
       date: p.date,
       category: p.category,
-      featured: p.isFeatured,
+      featured: p.isFeatured
     }))
 
     return {
@@ -56,8 +56,6 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData>
 
 const HomePage: React.FC<Route.ComponentProps> = ({ loaderData }) => {
   const { projects, posts, error } = loaderData
-
-  if (error) return null
 
   return (
     <>

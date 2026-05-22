@@ -23,20 +23,20 @@ export const loader = async ({}: Route.LoaderArgs): Promise<LoaderData> => {
 
     const projects = await response.json()
 
-    const uiProjects = projects.data.map(p => ({
+    const uiProjects = projects.data.map((p) => ({
       id: p.id,
       title: p.title,
       description: p.description,
-      image: `${import.meta.env.VITE_STRAPI_URL}${p.image.url}`,
+      image: p.image.url ? `${import.meta.env.VITE_STRAPI_URL}${p.image.url}` : "/images/no-image.png",
       url: p.url,
       date: p.date,
       category: p.category,
-      featured: p.isFeatured,
+      featured: p.isFeatured
     }))
 
     return {
       error: null,
-      projects: uiProjects,
+      projects: uiProjects
     }
   } catch (err: any) {
     const fetchErr = new Error(`Error to fetch projects from API: ${err.message || ""}`)

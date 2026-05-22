@@ -3,3 +3,4 @@ app/posts/
 public/
 data/
 package-lock.json
+.react-router/

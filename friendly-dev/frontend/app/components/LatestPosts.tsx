@@ -4,7 +4,7 @@ import { formatDate, sortedPostsByDateDesc } from "../utils"
 import PostCard from "./PostCard"
 
 type LatestPostsProps = {
-  posts: Array<PostMeta>
+  posts: Array<PostMeta> | null
   limit?: number
 }
 
