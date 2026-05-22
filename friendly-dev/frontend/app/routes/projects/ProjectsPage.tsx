@@ -5,36 +5,64 @@ import { useState } from "react"
 import Pagination from "../../components/Pagination"
 import { AnimatePresence, motion } from "framer-motion"
 
-export const loader = async ({}: Route.LoaderArgs): Promise<Array<Project>> => {
+type LoaderData = {
+  projects: Array<Project> | null
+  error: Error | null
+}
+
+export const loader = async ({}: Route.LoaderArgs): Promise<LoaderData> => {
   const isDevelopment = import.meta.env.DEV
   const url = isDevelopment ? `${import.meta.env.VITE_API_URL}/projects` : "production-url"
-  const response = await fetch(url)
-  return await response.json()
+
+  try {
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error("Failed to fetch projects from API")
+    }
+    const projects = await response.json()
+    return {
+      error: null,
+      projects
+    }
+  } catch (err: any) {
+    const fetchErr = new Error(`Error to fetch projects from API: ${err.message || ""}`)
+    fetchErr.stack = err.stack || ""
+    return {
+      projects: null,
+      error: fetchErr
+    }
+  }
 }
 
 const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("All")
   const [currentPage, setCurrentPage] = useState<number>(1)
 
-  const projects = loaderData
+  const { projects, error } = loaderData
 
-  // Extract unique categories from projects + "All"
-  const categories: Array<string> = ["All", ...new Set(projects.map((project) => project.category))]
+  let categories: Array<string> = []
+  let currentProjects: Array<Project> = []
+  let totalPages = 0
 
-  // Apply filters
-  let filteredProjects: Array<Project> = []
-  if (selectedCategory === "All") {
-    filteredProjects = projects
-  } else {
-    filteredProjects = projects.filter((project) => project.category === selectedCategory)
+  if (!error && projects != null) {
+    // Extract unique categories from projects + "All"
+    categories = ["All", ...new Set(projects.map((project) => project.category))]
+
+    // Apply filters
+    let filteredProjects: Array<Project> = []
+    if (selectedCategory === "All") {
+      filteredProjects = projects
+    } else {
+      filteredProjects = projects.filter((project) => project.category === selectedCategory)
+    }
+
+    // Paginate filtered projects
+    const projectsPerPage = 10
+    const totalPages = Math.ceil(filteredProjects.length / projectsPerPage)
+    const indexOfLast = currentPage * projectsPerPage
+    const indexOfFirst = indexOfLast - projectsPerPage
+    currentProjects = filteredProjects.slice(indexOfFirst, indexOfLast)
   }
-
-  // Paginate filtered projects
-  const projectsPerPage = 10
-  const totalPages = Math.ceil(filteredProjects.length / projectsPerPage)
-  const indexOfLast = currentPage * projectsPerPage
-  const indexOfFirst = indexOfLast - projectsPerPage
-  const currentProjects = filteredProjects.slice(indexOfFirst, indexOfLast)
 
   const handleChangeCategory = (category: string) => {
     setSelectedCategory(category)
@@ -47,29 +75,35 @@ const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
     <>
       <h2 className="text-3xl font-bold text-white mb-8">Projects</h2>
 
-      <div className="flex flex-wrap gap-2 mb-8">
-        {categories.length > 0 &&
-          categories.map((category) => (
-            <button
-              onClick={() => handleChangeCategory(category)}
-              className={`px-3 py-1 rounded text-sm cursor-pointer ${
-                selectedCategory === category ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-200"
-              }`}
-            >
-              {category}
-            </button>
-          ))}
-      </div>
+      {error && <div className="">🚫 {error.message}</div>}
 
-      <AnimatePresence mode="wait">
-        <motion.div layout className="grid gap-6 sm:grid-cols-2">
-          {currentProjects.map((project: Project) => (
-            <motion.div key={project.id} layout>
-              <ProjectCard project={project} />
+      {!error && (
+        <>
+          <div className="flex flex-wrap gap-2 mb-8">
+            {categories.length > 0 &&
+              categories.map((category: string) => (
+                <button
+                  onClick={() => handleChangeCategory(category)}
+                  className={`px-3 py-1 rounded text-sm cursor-pointer ${
+                    selectedCategory === category ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-200"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.div layout className="grid gap-6 sm:grid-cols-2">
+              {currentProjects.map((project: Project) => (
+                <motion.div key={project.id} layout>
+                  <ProjectCard project={project} />
+                </motion.div>
+              ))}
             </motion.div>
-          ))}
-        </motion.div>
-      </AnimatePresence>
+          </AnimatePresence>
+        </>
+      )}
 
       <Pagination numberOfPages={totalPages} currentPage={currentPage} handlePageChange={handlePageChange} />
     </>

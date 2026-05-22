@@ -9,8 +9,9 @@ export const meta = ({}: Route.MetaArgs) => {
 }
 
 type LoaderData = {
-  projects: Array<Project>
-  posts: Array<PostMeta>
+  projects: Array<Project> | null
+  posts: Array<PostMeta> | null
+  error: Error | null
 }
 
 export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData> => {
@@ -18,25 +19,37 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData>
   const projectsUrl = isDevelopment ? `${import.meta.env.VITE_API_URL}/projects` : "production-url"
   const postsUrl = new URL("/posts-meta.json", request.url)
 
-  const [projectsResponse, postsResponse] = await Promise.all([fetch(projectsUrl), fetch(postsUrl)])
-
-  if (!projectsResponse.ok || !postsResponse.ok) {
-    throw new Error("Failed to fetch projects and/or posts")
+  try {
+    const [projectsResponse, postsResponse] = await Promise.all([fetch(projectsUrl), fetch(postsUrl)])
+    if (!projectsResponse.ok || !postsResponse.ok) {
+      throw new Error("Failed to fetch projects and/or posts")
+    }
+    const [projects, posts] = await Promise.all([projectsResponse.json(), postsResponse.json()])
+    return {
+      projects,
+      posts,
+      error: null
+    }
+  } catch (err: any) {
+    const fetchErr = new Error(`Error to fetch project and/or posts from API: ${err.message || ""}`)
+    fetchErr.stack = err.stack || ""
+    return {
+      projects: null,
+      posts: null,
+      error: fetchErr
+    }
   }
-
-  const [projects, posts] = await Promise.all([projectsResponse.json(), postsResponse.json()])
-
-  return { projects, posts }
 }
 
 const HomePage: React.FC<Route.ComponentProps> = ({ loaderData }) => {
-  const { projects, posts } = loaderData
+  const { projects, posts, error } = loaderData
 
   return (
     <>
-      <FeaturedProjects projects={projects} count={2} />
+      {error && <div className="">🚫 {error.message}</div>}
+      {!error && projects && <FeaturedProjects projects={projects} count={2} />}
       <AboutPreview />
-      <LatestPosts posts={posts} limit={3} />
+      {!error && posts && <LatestPosts posts={posts} limit={3} />}
     </>
   )
 }
