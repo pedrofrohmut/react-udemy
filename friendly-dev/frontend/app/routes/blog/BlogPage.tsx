@@ -1,28 +1,43 @@
 import { useState } from "react"
+
 import PostCard from "../../components/PostCard"
 import Pagination from "../../components/Pagination"
 import PostsFilter from "../../components/PostsFilter"
-import { sortedPostsByDateDesc } from "../../utils"
+import { getImageUrlOrNone } from "../../utils"
 
 import type { Route } from "./+types/BlogPage"
-import type { PostMeta } from "~/types"
+import type { PostMeta, ApiPost } from "~/types"
 
 type CachedPostMeta = PostMeta & { lowerTitle: string; lowerExcerpt: string }
 
-export const loader = async ({ request }: Route.LoaderArgs): Promise<Array<CachedPostMeta>> => {
-  const url = new URL("/posts-meta.json", request.url)
-  const response = await fetch(url.href)
+export const loader = async ({ request }: Route.LoaderArgs): Promise<Array<CachedPostMeta> | null> => {
+  // const url = new URL("/posts-meta.json", request.url) // TODO: Change it to read from strapi
+  const url = `${import.meta.env.VITE_API_URL}/posts?populate=*&sort=date:desc`
+
+  const response = await fetch(url)
   if (!response.ok) {
-    throw new Error("Fail to fetch data from: /posts-meta.json")
+    // throw new Error("Fail to fetch data from: /posts-meta.json")
+    return null
   }
-  const data: Array<PostMeta> = await response.json()
-  const sorted = sortedPostsByDateDesc(data)
-  const withCache = sorted.map((postMeta) =>
+  const apiPosts = await response.json()
+
+  const posts = apiPosts.data.map((post: ApiPost) => ({
+    id: post.id,
+    documentId: post.documentId,
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt,
+    date: post.date,
+    image: getImageUrlOrNone(post.image?.url),
+  }))
+
+  const withCache = posts.map((postMeta: PostMeta) =>
     Object.assign(postMeta, {
       lowerTitle: postMeta.title.toLowerCase(),
       lowerExcerpt: postMeta.excerpt.toLowerCase()
     })
   )
+
   return withCache
 }
 

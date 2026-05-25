@@ -1,6 +1,6 @@
 import { Link } from "react-router"
 import type { PostMeta } from "../types"
-import { formatDate, sortedPostsByDateDesc } from "../utils"
+import { formatDate } from "../utils"
 import PostCard from "./PostCard"
 
 type LatestPostsProps = {
@@ -13,18 +13,18 @@ const LatestPosts: React.FC<LatestPostsProps> = ({ posts, limit = 3 }) => {
     return null
   }
 
-  const sorted = sortedPostsByDateDesc(posts)
-  const latest = sorted.slice(0, limit)
+  const limited = posts.slice(0, limit)
 
   return (
     <>
       <h2 className="text-2xl font-bold mb-6 text-white mt-12">🔥 Latest Posts</h2>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {latest.map((post: PostMeta) => (
+        {limited.map((post: PostMeta) => (
           <Link
             to={`/blog/${post.slug}`}
             key={post.id}
-            className="block p-4 border border-gray-700 rounded-lg bg-gray-800 hover:shadow-md transition"
+            className="block p-4 border-2 border-gray-700 hover:border-gray-200 rounded-lg
+            bg-gray-800 transition-[border] ease-in duration-[350ms]"
           >
             <h3 className="text-lg font-semibold text-blue-400 mb-1">{post.title}</h3>
             <p className="text-sm text-gray-300">{post.excerpt}</p>

@@ -10,8 +10,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   return (
     <div
       className="bg-gray-800 border-2 border-gray-700 rounded-lg overflow-hidden
-      shadow-sm transition hover:shadow-md hover:border-gray-200 transition-border
-      ease-in duration-500"
+      hover:border-gray-200 transition-[border] ease-in duration-[350ms]"
     >
       {image && <img alt={title} src={image} className="w-full h-40 object-cover" />}
 

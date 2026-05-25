@@ -1,8 +1,11 @@
 import type { Route } from "./+types/HomePage"
-import type { Project, PostMeta, ApiProject } from "../types"
+import type { Project, PostMeta, ApiProject, ApiPost } from "../types"
 import AboutPreview from "../components/AboutPreview"
 import FeaturedProjects from "../components/FeaturedProjects"
 import LatestPosts from "../components/LatestPosts"
+
+const FEATURED_PROJECTS_COUNT = 2
+const LATEST_POSTS_COUNT = 3
 
 export const meta = ({}: Route.MetaArgs) => {
   return [{ title: "The Friendly Dev" }, { name: "description", content: "Custom Website development" }]
@@ -16,9 +19,10 @@ type LoaderData = {
 
 export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData> => {
   // Filtering isFeatured == true projects in the url. Backend filtering
-  const projectsUrl = `${import.meta.env.VITE_API_URL}/projects?filters[isFeatured][$eq]=true&populat=*`
+  const projectsUrl = `${import.meta.env.VITE_API_URL}/projects?filters[isFeatured][$eq]=true` // From strapi
 
-  const postsUrl = new URL("/posts-meta.json", request.url)
+  // const postsUrl = new URL("/posts-meta.json", request.url) // From file
+  const postsUrl = `${import.meta.env.VITE_API_URL}/posts?populate=*&sort=date:desc&pagination[limit]=${LATEST_POSTS_COUNT}` // From strapi
 
   try {
     const [projectsResponse, postsResponse] = await Promise.all([fetch(projectsUrl), fetch(postsUrl)])
@@ -27,7 +31,17 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData>
       throw new Error("Fetch response not ok")
     }
 
-    const posts = await postsResponse.json()
+    const apiPosts = await postsResponse.json()
+    const posts = apiPosts.data.map((post: ApiPost) => ({
+      id: post.id,
+      documentId: post.documentId,
+      slug: post.slug,
+      title: post.title,
+      excerpt: post.excerpt,
+      date: post.date,
+      image: "",
+    }))
+
     const apiProjects = await projectsResponse.json()
     const projects = apiProjects.data.map((project: ApiProject) => ({
       id: project.id,
@@ -55,9 +69,9 @@ const HomePage: React.FC<Route.ComponentProps> = ({ loaderData }) => {
   return (
     <>
       {error && <div className="">🚫 {error.message}</div>}
-      {!error && <FeaturedProjects projects={projects} count={2} />}
+      {!error && <FeaturedProjects projects={projects} count={FEATURED_PROJECTS_COUNT} />}
       <AboutPreview />
-      {!error && <LatestPosts posts={posts} limit={3} />}
+      {!error && <LatestPosts posts={posts} limit={LATEST_POSTS_COUNT} />}
     </>
   )
 }

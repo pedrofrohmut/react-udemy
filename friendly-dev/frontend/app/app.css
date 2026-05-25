@@ -22,3 +22,7 @@ body {
     padding: 0;
     background-color: #282a3f;
 }
+
+.dimmed-image {
+    filter: brightness(80%) contrast(120%);
+}
