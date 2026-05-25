@@ -1,35 +1,50 @@
 import { Link } from "react-router"
 import Markdown from "react-markdown"
+
+import { formatDate } from "../../utils"
+import NotFoundPage from "../NotFoundPage"
+
 import type { Route } from "./+types/BlogPostDetailsPage"
 import type { PostMeta } from "../../types"
-import { formatDate } from "../../utils"
+
+// To read markdown file
+import fs from "node:fs/promises"
+import path from "path"
 
 type LoaderOutput = {
   markdown: string
   postMeta: PostMeta
 }
 
-export const loader = async ({ request, params }: Route.LoaderArgs): Promise<LoaderOutput> => {
+export const loader = async ({ request, params }: Route.LoaderArgs): Promise<LoaderOutput | null> => {
   const url = new URL("/posts-meta.json", request.url)
   const response = await fetch(url.href)
   if (!response.ok) {
-    throw new Error("Failed to fetch data from 'posts-meta.json'")
+    return null
   }
   const postsMeta = await response.json()
 
   // Get PostMeta from 'posts-meta.json' by params.slug
   const postMeta = postsMeta.find((postMeta: PostMeta) => postMeta.slug === params.slug)
   if (!postMeta) {
-    throw new Response("Not found", { status: 404 })
+    return null
   }
 
   // Import raw markdown from file with the same name of the slug
-  const markdown = await import(`../../posts/${params.slug}.md?raw`)
-
-  return { postMeta, markdown: markdown.default }
+  const mdPath = path.join(process.cwd(), `/app/posts/${params.slug}.md`)
+  try {
+    const data = await fs.readFile(mdPath, { encoding: "utf8" })
+    return { postMeta, markdown: data }
+  } catch {
+    return null
+  }
 }
 
 const BlogPostDetailsPage: React.FC<Route.ComponentProps> = ({ loaderData }) => {
+  if (!loaderData) {
+    return <NotFoundPage />
+  }
+
   const { postMeta: meta, markdown } = loaderData
 
   return (

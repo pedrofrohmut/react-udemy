@@ -1,5 +1,5 @@
 import type { Route } from "./+types/HomePage"
-import type { Project, PostMeta } from "../types"
+import type { Project, PostMeta, ApiProject } from "../types"
 import AboutPreview from "../components/AboutPreview"
 import FeaturedProjects from "../components/FeaturedProjects"
 import LatestPosts from "../components/LatestPosts"
@@ -27,15 +27,16 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData>
 
     const [projects, posts] = await Promise.all([projectsResponse.json(), postsResponse.json()])
 
-    const uiProjects = projects.data.map((p) => ({
-      id: p.id,
-      title: p.title,
-      description: p.description,
+    const uiProjects: Array<Project> = projects.data.map((project: ApiProject) => ({
+      id: project.id,
+      documentId: project.documentId,
+      title: project.title,
+      description: project.description,
       image: "",
-      url: p.url,
-      date: p.date,
-      category: p.category,
-      featured: p.isFeatured
+      url: project.url,
+      date: project.date,
+      category: project.category,
+      featured: project.isFeatured
     }))
 
     return {

@@ -1,25 +1,38 @@
 import type { Route } from "./+types/ProjectDetailsPage"
-import type { Project } from "../../types"
-
+import type { Project, ApiProject } from "../../types"
 import { FaArrowLeft } from "react-icons/fa"
 import { Link } from "react-router"
-import { formatDate } from "../../utils"
+import { formatDate, getImageUrlOrNone } from "../../utils"
+import NotFoundPage from "../NotFoundPage"
 
-export const clientLoader = async ({ params }: Route.ClientLoaderArgs): Promise<Project> => {
-  const isDevelopment = import.meta.env.DEV
-  const url = isDevelopment ? `${import.meta.env.VITE_API_URL}/projects/${params.id}` : "production-url"
+export const loader = async ({ params }: Route.LoaderArgs): Promise<Project | null> => {
+  const url = `${import.meta.env.VITE_API_URL}/projects/${params.id}?populate=*`
+
   const response = await fetch(url)
   if (!response.ok) {
-    throw new Response("Project not found", { status: 404 })
+    return null
   }
-  const project: Project = await response.json()
-  return project
+  const apiProject: ApiProject = (await response.json()).data
+
+  const uiProject: Project = {
+    id: apiProject.id,
+    documentId: apiProject.documentId,
+    title: apiProject.title,
+    description: apiProject.description,
+    image: getImageUrlOrNone(apiProject.image?.url),
+    url: apiProject.url,
+    date: apiProject.date,
+    category: apiProject.category,
+    featured: apiProject.isFeatured,
+  }
+
+  return uiProject
 }
 
-export const HydrateFallback = () => <div>Loading...</div>
-
-const ProjectDetailsPage = ({ loaderData }: Route.ComponentProps) => {
+const ProjectDetailsPage: React.FC<Route.ComponentProps> = ({ loaderData }) => {
   const project = loaderData
+
+  if (!project) return <NotFoundPage />
 
   return (
     <>

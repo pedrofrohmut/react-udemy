@@ -1,9 +1,11 @@
-import type { Project } from "../../types"
+import type { Project, ApiProject } from "../../types"
 import type { Route } from "./+types/ProjectsPage"
 import ProjectCard from "../../components/ProjectCard"
 import { useState } from "react"
 import Pagination from "../../components/Pagination"
 import { AnimatePresence, motion } from "framer-motion"
+import { getImageUrlOrNone } from "../../utils"
+import { Link } from "react-router"
 
 type LoaderData = {
   projects: Array<Project> | null
@@ -23,15 +25,16 @@ export const loader = async ({}: Route.LoaderArgs): Promise<LoaderData> => {
 
     const projects = await response.json()
 
-    const uiProjects = projects.data.map((p) => ({
-      id: p.id,
-      title: p.title,
-      description: p.description,
-      image: p.image.url ? `${import.meta.env.VITE_STRAPI_URL}${p.image.url}` : "/images/no-image.png",
-      url: p.url,
-      date: p.date,
-      category: p.category,
-      featured: p.isFeatured
+    const uiProjects: Array<Project> = projects.data.map((project: ApiProject) => ({
+      id: project.id,
+      documentId: project.documentId,
+      title: project.title,
+      description: project.description,
+      image: getImageUrlOrNone(project.image?.url),
+      url: project.url,
+      date: project.date,
+      category: project.category,
+      featured: project.isFeatured
     }))
 
     return {
@@ -96,8 +99,9 @@ const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
         <>
           <div className="flex flex-wrap gap-2 mb-8">
             {categories.length > 0 &&
-              categories.map((category: string) => (
+              categories.map((category: string, index: number) => (
                 <button
+                  key={`category${index}`}
                   onClick={() => handleChangeCategory(category)}
                   className={`px-3 py-1 rounded text-sm cursor-pointer ${
                     selectedCategory === category ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-200"
@@ -112,7 +116,9 @@ const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
             <motion.div layout className="grid gap-6 sm:grid-cols-2">
               {currentProjects.map((project: Project) => (
                 <motion.div key={project.id} layout>
-                  <ProjectCard project={project} />
+                  <Link to={`/projects/${project.documentId}`} className="block">
+                    <ProjectCard project={project} />
+                  </Link>
                 </motion.div>
               ))}
             </motion.div>
