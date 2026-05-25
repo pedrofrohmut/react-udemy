@@ -15,7 +15,9 @@ type LoaderData = {
 }
 
 export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData> => {
-  const projectsUrl = `${import.meta.env.VITE_API_URL}/projects`
+  // Filtering isFeatured == true projects in the url. Backend filtering
+  const projectsUrl = `${import.meta.env.VITE_API_URL}/projects?filters[isFeatured][$eq]=true&populat=*`
+
   const postsUrl = new URL("/posts-meta.json", request.url)
 
   try {
@@ -25,9 +27,9 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData>
       throw new Error("Fetch response not ok")
     }
 
-    const [projects, posts] = await Promise.all([projectsResponse.json(), postsResponse.json()])
-
-    const uiProjects: Array<Project> = projects.data.map((project: ApiProject) => ({
+    const posts = await postsResponse.json()
+    const apiProjects = await projectsResponse.json()
+    const projects = apiProjects.data.map((project: ApiProject) => ({
       id: project.id,
       documentId: project.documentId,
       title: project.title,
@@ -36,22 +38,14 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData>
       url: project.url,
       date: project.date,
       category: project.category,
-      featured: project.isFeatured
+      isFeatured: project.isFeatured
     }))
 
-    return {
-      projects: uiProjects,
-      posts,
-      error: null
-    }
+    return { projects, posts, error: null }
   } catch (err: any) {
     const fetchErr = new Error(`Error to fetch project and/or posts from API: ${err.message || ""}`)
     fetchErr.stack = err.stack || ""
-    return {
-      projects: null,
-      posts: null,
-      error: fetchErr
-    }
+    return { projects: null, posts: null, error: fetchErr }
   }
 }
 

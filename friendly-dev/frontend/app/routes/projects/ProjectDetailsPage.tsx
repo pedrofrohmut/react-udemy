@@ -23,7 +23,7 @@ export const loader = async ({ params }: Route.LoaderArgs): Promise<Project | nu
     url: apiProject.url,
     date: apiProject.date,
     category: apiProject.category,
-    featured: apiProject.isFeatured,
+    isFeatured: apiProject.isFeatured,
   }
 
   return uiProject

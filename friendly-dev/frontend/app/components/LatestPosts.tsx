@@ -9,7 +9,7 @@ type LatestPostsProps = {
 }
 
 const LatestPosts: React.FC<LatestPostsProps> = ({ posts, limit = 3 }) => {
-  if (!posts || !Array.isArray(posts) || !limit) {
+  if (!posts || !Array.isArray(posts) || posts.length === 0 || !limit) {
     return null
   }
 

@@ -7,7 +7,7 @@ export type Project = {
   url: string
   date: string
   category: string
-  featured: boolean
+  isFeatured: boolean
 }
 
 export type PostMeta = {

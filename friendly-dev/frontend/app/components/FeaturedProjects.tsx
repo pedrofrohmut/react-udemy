@@ -7,11 +7,11 @@ type FeaturedProjectsProps = {
 }
 
 const FeaturedProjects: React.FC<FeaturedProjectsProps> = ({ projects, count = 2 }) => {
-  if (!projects || !Array.isArray(projects) || !count) {
+  if (!projects || !Array.isArray(projects) || projects.length === 0 || !count) {
     return null
   }
 
-  const featured = projects.filter((p) => p.featured).slice(0, count)
+  const featured = projects.slice(0, count)
 
   return (
     <section>
