@@ -32,14 +32,12 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData>
     }
 
     const apiPosts = await postsResponse.json()
-    const posts = apiPosts.data.map((post: ApiPost) => ({
+    const latestPosts = apiPosts.data.map((post: ApiPost) => ({
       id: post.id,
-      documentId: post.documentId,
-      slug: post.slug,
       title: post.title,
       excerpt: post.excerpt,
       date: post.date,
-      image: "",
+      slug: post.slug,
     }))
 
     const apiProjects = await projectsResponse.json()
@@ -55,7 +53,7 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<LoaderData>
       isFeatured: project.isFeatured
     }))
 
-    return { projects, posts, error: null }
+    return { projects, posts: latestPosts, error: null }
   } catch (err: any) {
     const fetchErr = new Error(`Error to fetch project and/or posts from API: ${err.message || ""}`)
     fetchErr.stack = err.stack || ""
