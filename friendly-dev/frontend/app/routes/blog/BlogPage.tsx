@@ -11,7 +11,7 @@ import type { PostMeta, ApiPost } from "~/types"
 type CachedPostMeta = PostMeta & { lowerTitle: string; lowerExcerpt: string }
 
 export const loader = async ({ request }: Route.LoaderArgs): Promise<Array<CachedPostMeta> | null> => {
-  // const url = new URL("/posts-meta.json", request.url) // TODO: Change it to read from strapi
+  // const url = new URL("/posts-meta.json", request.url)
   const url = `${import.meta.env.VITE_API_URL}/posts?populate=*&sort=date:desc`
 
   const response = await fetch(url)
@@ -72,8 +72,9 @@ const BlogPage = ({ loaderData }: Route.ComponentProps) => {
       {currentPosts.length === 0 && <p className="text-gray-400 text-center">No posts found</p>}
 
       <div className="flex flex-col gap-4">
-        {currentPosts.length > 0 &&
-          currentPosts.map((postMeta: PostMeta) => <PostCard key={postMeta.slug} postMeta={postMeta} />)}
+        {currentPosts.length > 0 && currentPosts.map((postMeta: PostMeta) => (
+            <PostCard key={postMeta.slug} postMeta={postMeta} />
+        ))}
       </div>
 
       <Pagination numberOfPages={totalPages} currentPage={currentPage} handlePageChange={handlePageChange} />

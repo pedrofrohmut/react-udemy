@@ -1,41 +1,56 @@
 import { Link } from "react-router"
 import Markdown from "react-markdown"
 
-import { formatDate } from "../../utils"
+import { formatDate, getImageUrlOrNone } from "../../utils"
 import NotFoundPage from "../NotFoundPage"
 
 import type { Route } from "./+types/BlogPostDetailsPage"
-import type { PostMeta } from "../../types"
+import type { PostMeta, ApiPost } from "../../types"
 
 // To read markdown file
 import fs from "node:fs/promises"
 import path from "path"
 
 type LoaderOutput = {
-  markdown: string
+  markdown: string | null
   postMeta: PostMeta
 }
 
 export const loader = async ({ request, params }: Route.LoaderArgs): Promise<LoaderOutput | null> => {
-  const url = new URL("/posts-meta.json", request.url)
-  const response = await fetch(url.href)
+  // const url = `${import.meta.env.VITE_API_URL}/posts/${params.id}?populate=*`
+  const url = `${import.meta.env.VITE_API_URL}/posts/?populate=image&filters[slug][$eq]=${params.slug}`
+
+  const response = await fetch(url)
   if (!response.ok) {
     return null
   }
-  const postsMeta = await response.json()
+  const apiPostsMeta = await response.json()
 
-  // Get PostMeta from 'posts-meta.json' by params.slug
-  const postMeta = postsMeta.find((postMeta: PostMeta) => postMeta.slug === params.slug)
-  if (!postMeta) {
+  if (apiPostsMeta.data.length === 0) {
     return null
   }
 
+  const apiPost: ApiPost = apiPostsMeta.data[0]
+  const postMeta: PostMeta = {
+    id: apiPost.id,
+    documentId: apiPost.documentId,
+    slug: apiPost.slug,
+    title: apiPost.title,
+    excerpt: apiPost.excerpt,
+    date: apiPost.date,
+    image: getImageUrlOrNone(apiPost.image?.url),
+    body: apiPost.body,
+  }
+
   // Import raw markdown from file with the same name of the slug
-  const mdPath = path.join(process.cwd(), `/app/posts/${params.slug}.md`)
+  const mdPath = path.join(process.cwd(), `/app/posts/${postMeta.slug}.md`)
   try {
     const data = await fs.readFile(mdPath, { encoding: "utf8" })
+
+    // INFO: You can use markdown from strapi if you use postMeta.body instead of markdown
     return { postMeta, markdown: data }
-  } catch {
+  } catch (err) {
+    console.error(err)
     return null
   }
 }
@@ -52,7 +67,10 @@ const BlogPostDetailsPage: React.FC<Route.ComponentProps> = ({ loaderData }) => 
       <h1 className="text-3xl font-bold text-blue-400 mb-2">{meta.title}</h1>
       <p className="text-sm text-gray-400 mb-6">{formatDate(new Date(meta.date).toString())}</p>
 
+      <img src={meta.image} alt={meta.title} className="w-full h-64 object-cover rounded-md mb-6 dimmed-image" />
+
       <div className="prose prose-invert max-w-none mb-12 text-white">
+        {/* Use markdown for local file and meta.body for strapi file */}
         <Markdown>{markdown}</Markdown>
       </div>
 

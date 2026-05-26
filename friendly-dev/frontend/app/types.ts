@@ -28,13 +28,14 @@ export type ApiProject = {
 }
 
 export type PostMeta = {
-  id: string
+  id: number
   documentId: string
   slug: string
   title: string
   excerpt: string
   date: string
   image: string
+  body: string
 }
 
 export type ApiPost = {
