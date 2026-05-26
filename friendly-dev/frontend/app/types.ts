@@ -27,7 +27,7 @@ export type ApiProject = {
   }
 }
 
-export type PostMeta = {
+export type Post = {
   id: number
   documentId: string
   slug: string

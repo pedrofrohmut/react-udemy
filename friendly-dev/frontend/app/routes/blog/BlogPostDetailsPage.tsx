@@ -5,7 +5,7 @@ import { formatDate, getImageUrlOrNone } from "../../utils"
 import NotFoundPage from "../NotFoundPage"
 
 import type { Route } from "./+types/BlogPostDetailsPage"
-import type { PostMeta, ApiPost } from "../../types"
+import type { Post, ApiPost } from "../../types"
 
 // To read markdown file
 import fs from "node:fs/promises"
@@ -13,11 +13,10 @@ import path from "path"
 
 type LoaderOutput = {
   markdown: string | null
-  postMeta: PostMeta
+  postMeta: Post
 }
 
 export const loader = async ({ request, params }: Route.LoaderArgs): Promise<LoaderOutput | null> => {
-  // const url = `${import.meta.env.VITE_API_URL}/posts/${params.id}?populate=*`
   const url = `${import.meta.env.VITE_API_URL}/posts/?populate=image&filters[slug][$eq]=${params.slug}`
 
   const response = await fetch(url)
@@ -31,7 +30,7 @@ export const loader = async ({ request, params }: Route.LoaderArgs): Promise<Loa
   }
 
   const apiPost: ApiPost = apiPostsMeta.data[0]
-  const postMeta: PostMeta = {
+  const postMeta: Post = {
     id: apiPost.id,
     documentId: apiPost.documentId,
     slug: apiPost.slug,

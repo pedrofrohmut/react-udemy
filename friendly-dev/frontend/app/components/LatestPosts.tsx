@@ -1,10 +1,10 @@
 import { Link } from "react-router"
-import type { PostMeta } from "../types"
+import type { Post } from "../types"
 import { formatDate } from "../utils"
 import PostCard from "./PostCard"
 
 type LatestPostsProps = {
-  posts: Array<PostMeta> | null
+  posts: Array<Post> | null
   limit?: number
 }
 
@@ -19,7 +19,7 @@ const LatestPosts: React.FC<LatestPostsProps> = ({ posts, limit = 3 }) => {
     <>
       <h2 className="text-2xl font-bold mb-6 text-white mt-12">🔥 Latest Posts</h2>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {limited.map((post: PostMeta) => (
+        {limited.map((post: Post) => (
           <Link
             to={`/blog/${post.slug}`}
             key={post.id}

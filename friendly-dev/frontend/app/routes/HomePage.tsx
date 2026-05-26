@@ -1,5 +1,5 @@
 import type { Route } from "./+types/HomePage"
-import type { Project, PostMeta, ApiProject, ApiPost } from "../types"
+import type { Project, Post, ApiProject, ApiPost } from "../types"
 import AboutPreview from "../components/AboutPreview"
 import FeaturedProjects from "../components/FeaturedProjects"
 import LatestPosts from "../components/LatestPosts"
@@ -13,7 +13,7 @@ export const meta = ({}: Route.MetaArgs) => {
 
 type LoaderData = {
   projects: Array<Project> | null
-  posts: Array<PostMeta> | null
+  posts: Array<Post> | null
   error: Error | null
 }
 

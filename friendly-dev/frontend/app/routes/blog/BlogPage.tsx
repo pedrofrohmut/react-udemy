@@ -6,11 +6,11 @@ import PostsFilter from "../../components/PostsFilter"
 import { getImageUrlOrNone } from "../../utils"
 
 import type { Route } from "./+types/BlogPage"
-import type { PostMeta, ApiPost } from "~/types"
+import type { Post, ApiPost } from "~/types"
 
-type CachedPostMeta = PostMeta & { lowerTitle: string; lowerExcerpt: string }
+type CachedPost = Post & { lowerTitle: string; lowerExcerpt: string }
 
-export const loader = async ({ request }: Route.LoaderArgs): Promise<Array<CachedPostMeta> | null> => {
+export const loader = async ({ request }: Route.LoaderArgs): Promise<Array<CachedPost> | null> => {
   // const url = new URL("/posts-meta.json", request.url)
   const url = `${import.meta.env.VITE_API_URL}/posts?populate=*&sort=date:desc`
 
@@ -31,7 +31,7 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<Array<Cache
     image: getImageUrlOrNone(post.image?.url),
   }))
 
-  const withCache = posts.map((postMeta: PostMeta) =>
+  const withCache = posts.map((postMeta: Post) =>
     Object.assign(postMeta, {
       lowerTitle: postMeta.title.toLowerCase(),
       lowerExcerpt: postMeta.excerpt.toLowerCase()
@@ -41,21 +41,33 @@ export const loader = async ({ request }: Route.LoaderArgs): Promise<Array<Cache
   return withCache
 }
 
-const BlogPage = ({ loaderData }: Route.ComponentProps) => {
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const [searchQuery, setSearchQuery] = useState<string>("")
 
-  const postsMeta = loaderData
+type FilterResult = { currentPosts: Array<CachedPost>; totalPages: number }
 
-  const filteredPosts = postsMeta.filter(
-    (post: CachedPostMeta) => post.lowerTitle.includes(searchQuery) || post.lowerExcerpt.includes(searchQuery)
-  )
+const filterPosts = (posts: Array<CachedPost> | null, currentPage: number, searchQuery: string): FilterResult => {
+  if (posts === null) {
+    return { currentPosts: [], totalPages: 0 }
+  }
+
+  const filteredPosts = posts.filter((post: CachedPost) => (
+    post.lowerTitle.includes(searchQuery) || post.lowerExcerpt.includes(searchQuery)
+  ))
 
   const postsPerPage = 2
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage)
 
   const first = postsPerPage * (currentPage - 1)
   const currentPosts = filteredPosts.slice(first, first + postsPerPage)
+
+  return { currentPosts, totalPages }
+}
+
+const BlogPage = ({ loaderData }: Route.ComponentProps) => {
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [searchQuery, setSearchQuery] = useState<string>("")
+
+  const posts = loaderData
+  const { currentPosts, totalPages } = filterPosts(posts, currentPage, searchQuery)
 
   const handlePageChange = (n: number) => setCurrentPage(n)
 
@@ -72,7 +84,7 @@ const BlogPage = ({ loaderData }: Route.ComponentProps) => {
       {currentPosts.length === 0 && <p className="text-gray-400 text-center">No posts found</p>}
 
       <div className="flex flex-col gap-4">
-        {currentPosts.length > 0 && currentPosts.map((postMeta: PostMeta) => (
+        {currentPosts.length > 0 && currentPosts.map((postMeta: Post) => (
             <PostCard key={postMeta.slug} postMeta={postMeta} />
         ))}
       </div>

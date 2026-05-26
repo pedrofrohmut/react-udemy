@@ -1,9 +1,9 @@
 import { Link } from "react-router"
 import { formatDate } from "../utils"
-import type { PostMeta } from "~/types"
+import type { Post } from "~/types"
 
 type PostCardProps = {
-  postMeta: PostMeta
+  postMeta: Post
 }
 
 const PostCard: React.FC<PostCardProps> = ({ postMeta }) => {

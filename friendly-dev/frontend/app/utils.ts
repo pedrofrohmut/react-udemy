@@ -1,4 +1,4 @@
-import type { PostMeta } from "./types"
+import type { Post } from "./types"
 
 export const formatDate = (dateToFmt: string): string => {
   const options: any = {
@@ -12,7 +12,7 @@ export const formatDate = (dateToFmt: string): string => {
 
 // Descending b - a
 // StructuredClone is for array deep copy
-export const sortedPostsByDateDesc = (posts: Array<PostMeta>): Array<PostMeta> =>
+export const sortedPostsByDateDesc = (posts: Array<Post>): Array<Post> =>
   structuredClone(posts).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
 export const getImageUrlOrNone = (url: string | undefined) =>
