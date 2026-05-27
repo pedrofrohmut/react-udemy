@@ -1,35 +1,53 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useQuery } from "@tanstack/react-query"
 
 import { fetchGithubUser } from "../api/github"
 import UserCard from "./UserCard"
+import RecentUsers from "./RecentUsers"
 
 const UserSearch = () => {
-  // TODO: Check if 'username' it need to be in the state or a useRef would be enough
-  const [username, setUsername] = useState("")
+  const [query, setQuery] = useState<string>("")
+  const [recentUsers, setRecentUsers] = useState<Array<string>>([])
 
-  const [submittedUsername, setSubmittedUsername] = useState("")
+  const queryRef = useRef<HTMLInputElement>(null)
 
-  const { isLoading, isError, isFetched, error, data: user } = useQuery({
-    queryKey: ['users', submittedUsername],
-    queryFn: () => fetchGithubUser(submittedUsername),
-    enabled: submittedUsername !== "" // Prevents fetching for empty strings
+  const { isLoading, isError, isFetched, error, data } = useQuery({
+    queryKey: ['users', query],
+    queryFn: () => fetchGithubUser(query),
+      enabled: query !== "" // Prevents fetching for empty queries and on component mount
   })
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
-    setSubmittedUsername(username.trim())
+
+    if (!queryRef.current) {
+      console.error("Invalid ref for query input")
+      return
+    }
+
+    const trimmedQuery = queryRef.current.value.trim()
+    if (!trimmedQuery) return
+
+      setQuery(trimmedQuery)
+
+      setRecentUsers(prev => {
+        const isPresent = prev.find(x => x === trimmedQuery)
+        if (isPresent) return prev
+          return prev.concat(trimmedQuery)
+      })
+  }
+
+  const handleSelectRecent = (username: string) => {
+    setQuery(username)
+    if (queryRef?.current) {
+      queryRef.current.value = username
+    }
   }
 
   return (
     <>
       <form onSubmit={handleSubmit} className="form">
-        <input
-          type="text"
-          placeholder="Enter github Username..."
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-        />
+        <input type="text" placeholder="Enter github Username..." ref={queryRef} />
         <button type="submit">Search</button>
       </form>
 
@@ -37,11 +55,11 @@ const UserSearch = () => {
 
       {isError && <div className="status error">{error.message}</div>}
 
-      {isFetched && !user && <p>User not found.</p>}
+      {isFetched && !data && <p>User not found.</p>}
 
-      {isFetched && user && (
-        <UserCard user={user} />
-      )}
+      {isFetched && data && <UserCard user={data} />}
+
+      <RecentUsers recentUsers={recentUsers} handleSelectRecent={handleSelectRecent} />
     </>
   )
 }
