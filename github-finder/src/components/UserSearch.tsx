@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import { fetchGithubUser, searchGithubUser } from "../api/github"
 import UserCard from "./UserCard"
 import RecentUsers from "./RecentUsers"
+import SuggestionsDropdown from "./SuggestionsDropdown"
 
 import type { GithubUser } from "../types"
 
@@ -15,7 +16,9 @@ const initRecentUsers = () => {
   return JSON.parse(lsRecentUsers)
 }
 
-const UserSearch = () => {
+type UserSearchProps = {}
+
+const UserSearch: React.FC<UserSearchProps> = () => {
   const [text, setText] = useState<string>("")
   const [query, setQuery] = useState<string>("")
   const [recentUsers, setRecentUsers] = useState<Array<string>>(initRecentUsers)
@@ -95,14 +98,7 @@ const UserSearch = () => {
           />
 
           {suggestions.length > 0 && (
-            <ul className="suggestions">
-              {suggestions.map((user: GithubUser) => (
-                <li key={user.login} onClick={() => handleSelectSuggestion(user.login)}>
-                  <img src={user.avatar_url} alt={user.login} className="avatar-xs" />
-                  {user.login}
-                </li>
-              ))}
-            </ul>
+            <SuggestionsDropdown suggestions={suggestions} onSelectSuggestion={handleSelectSuggestion} />
           )}
         </div>
 
@@ -117,7 +113,9 @@ const UserSearch = () => {
 
       {isFetched && data && <UserCard user={data} />}
 
-      <RecentUsers recentUsers={recentUsers} handleSelectRecent={handleSelectRecent} />
+      {recentUsers && recentUsers.length > 0 && (
+        <RecentUsers recentUsers={recentUsers} handleSelectRecent={handleSelectRecent} />
+      )}
     </>
   )
 }

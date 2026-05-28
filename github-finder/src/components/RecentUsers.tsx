@@ -20,24 +20,24 @@ const RecentUsers: React.FC<RecentUsersProps> = ({ recentUsers, handleSelectRece
       <div className="recent-header">
         <FaClock />
         <h3>Recent Searches</h3>
-        <ul>
-          {recentUsers.map((user: string) => (
-            <li key={user}>
-              <button
-                onClick={() => handleSelectRecent(user)}
-                onMouseEnter={() => {
-                  queryClient.prefetchQuery({
-                    queryKey: ["users", user],
-                    queryFn: () => fetchGithubUser(user),
-                  })
-                }}
-              >
-                <FaUser className="user-icon" /> {user}
-              </button>
-            </li>
-          ))}
-        </ul>
       </div>
+      <ul>
+        {recentUsers.map((user: string) => (
+          <li key={user}>
+            <button
+              onClick={() => handleSelectRecent(user)}
+              onMouseEnter={() => {
+                queryClient.prefetchQuery({
+                  queryKey: ["users", user],
+                  queryFn: () => fetchGithubUser(user),
+                })
+              }}
+            >
+              <FaUser className="user-icon" /> {user}
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
