@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, useMutation } from "@tanstack/react-query"
 import { FaGithubAlt, FaUserMinus, FaUserPlus } from "react-icons/fa"
 import type { GithubUser } from "../types"
 
-import { checkIfFollowingUser } from "../api/github"
+import { checkIfFollowingUser, followUser } from "../api/github"
 
 type UserCardProps = {
   user: GithubUser
@@ -16,8 +16,20 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
   const { data: isFollowing, refetch } = useQuery({
     queryKey: ["follow-status", user.login],
     queryFn: () => checkIfFollowingUser(user.login),
-    enabled: user.login && user.login !== "",
+    enabled: user.login !== ""
   })
+
+  // const {} = useMutation({
+  //   mutationFn: () => followUser(user.login)
+  // })
+
+  const handleClick = () => {
+    if (isFollowing) {
+      console.log("Mutate called: Stop Following")
+    } else {
+      console.log("Mutate called: Start Following")
+    }
+  }
 
   return (
     <div className="user-card">
@@ -26,7 +38,7 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
       <p className="bio">{user.bio}</p>
 
       <div className="user-card-buttons">
-        <button className={`follow-btn ${isFollowing ? "following" : ""}`}>
+        <button className={`follow-btn ${isFollowing ? "following" : ""}`} onClick={handleClick}>
           {isFollowing ? (
             <>
               <FaUserMinus className="follow-icon" /> Following

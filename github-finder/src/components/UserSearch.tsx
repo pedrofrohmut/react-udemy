@@ -29,7 +29,7 @@ const UserSearch: React.FC<UserSearchProps> = () => {
   const { isLoading, isError, isFetched, error, data } = useQuery({
     queryKey: ['users', query],
     queryFn: () => fetchGithubUser(query),
-      enabled: query !== "" // Prevents fetching for empty queries and on component mount
+    enabled: query !== "" // Prevents fetching for empty queries and on component mount
   })
 
   const trySearchUser = (username: string) => {

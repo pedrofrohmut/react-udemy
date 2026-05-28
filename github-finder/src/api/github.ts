@@ -34,9 +34,9 @@ export const checkIfFollowingUser = async (username: string) => {
     }
   })
 
-  if (!response.ok) {
-    throw new Error("Error to check if following user")
-  }
+  try {
+    await res.json()
+  } catch {}
 
   if (response.status === FOLLOWING_CODE) {
     return true
@@ -46,5 +46,23 @@ export const checkIfFollowingUser = async (username: string) => {
     return false
   }
 
-  throw new Error("Error to check if following user")
+  // throw new Error("Error to check if following user")
+}
+
+// https://docs.github.com/en/rest/users/followers?apiVersion=2026-03-10#follow-a-user
+export const followUser = async (username: string) => {
+  const response = await fetch(`${import.meta.env.VITE_GITHUB_API_URL}/user/following/${username}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${import.meta.env.VITE_GITHUB_API_TOKEN}`,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "Application/json",
+    }
+  })
+
+  if (!response.ok) {
+    throw new Error("Failed to follow user")
+  }
+
+  return true
 }
