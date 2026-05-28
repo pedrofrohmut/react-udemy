@@ -1,19 +1,47 @@
-import { FaGithubAlt } from "react-icons/fa"
+import { useQuery } from "@tanstack/react-query"
+import { FaGithubAlt, FaUserMinus, FaUserPlus } from "react-icons/fa"
 import type { GithubUser } from "../types"
+
+import { checkIfFollowingUser } from "../api/github"
 
 type UserCardProps = {
   user: GithubUser
 }
 
 const UserCard: React.FC<UserCardProps> = ({ user }) => {
+  if (!user) {
+    return null
+  }
+
+  const { data: isFollowing, refetch } = useQuery({
+    queryKey: ["follow-status", user.login],
+    queryFn: () => checkIfFollowingUser(user.login),
+    enabled: user.login && user.login !== "",
+  })
+
   return (
     <div className="user-card">
       <img src={user.avatar_url} alt={user.name} className="avatar" />
       <h2>{user.name || user.login}</h2>
       <p className="bio">{user.bio}</p>
-      <a className="profile-btn" href={user.html_url} target="_blank" rel="noopener noreferrer">
-        <FaGithubAlt /> View Github Profile
-      </a>
+
+      <div className="user-card-buttons">
+        <button className={`follow-btn ${isFollowing ? "following" : ""}`}>
+          {isFollowing ? (
+            <>
+              <FaUserMinus className="follow-icon" /> Following
+            </>
+          ) : (
+            <>
+              <FaUserPlus className="follow-icon" /> Follow user
+            </>
+          )}
+        </button>
+
+        <a className="profile-btn" href={user.html_url} target="_blank" rel="noopener noreferrer">
+          <FaGithubAlt /> View Github Profile
+        </a>
+      </div>
     </div>
   )
 }
