@@ -1,15 +1,27 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useQuery } from "@tanstack/react-query"
 
-import { fetchGithubUser } from "../api/github"
+import { fetchGithubUser, searchGithubUser } from "../api/github"
 import UserCard from "./UserCard"
 import RecentUsers from "./RecentUsers"
 
-const UserSearch = () => {
-  const [query, setQuery] = useState<string>("")
-  const [recentUsers, setRecentUsers] = useState<Array<string>>([])
+import type { GithubUser } from "../types"
 
-  const queryRef = useRef<HTMLInputElement>(null)
+const initRecentUsers = () => {
+  const lsRecentUsers = localStorage.getItem("recentUsers")
+  if (!lsRecentUsers) {
+    return []
+  }
+  return JSON.parse(lsRecentUsers)
+}
+
+const UserSearch = () => {
+  const [text, setText] = useState<string>("")
+  const [query, setQuery] = useState<string>("")
+  const [recentUsers, setRecentUsers] = useState<Array<string>>(initRecentUsers)
+  const [suggestions, setSuggestions] = useState<Array<GithubUser>>([])
+
+  const debounceInterval = useRef<any>(null)
 
   const { isLoading, isError, isFetched, error, data } = useQuery({
     queryKey: ['users', query],
@@ -17,37 +29,83 @@ const UserSearch = () => {
       enabled: query !== "" // Prevents fetching for empty queries and on component mount
   })
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
-    e.preventDefault()
-
-    if (!queryRef.current) {
-      console.error("Invalid ref for query input")
+  const trySearchUser = (username: string) => {
+    const trimmedQuery = username.trim()
+    if (!trimmedQuery || trimmedQuery === "") {
       return
     }
 
-    const trimmedQuery = queryRef.current.value.trim()
-    if (!trimmedQuery) return
+    setQuery(trimmedQuery)
 
-      setQuery(trimmedQuery)
+    setRecentUsers(prev => {
+      const isPresent = prev.find(x => x === trimmedQuery)
+      if (isPresent) return prev
+        return prev.concat(trimmedQuery)
+    })
+  }
 
-      setRecentUsers(prev => {
-        const isPresent = prev.find(x => x === trimmedQuery)
-        if (isPresent) return prev
-          return prev.concat(trimmedQuery)
-      })
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+    e.preventDefault()
+    setSuggestions([])
+    trySearchUser(text)
   }
 
   const handleSelectRecent = (username: string) => {
     setQuery(username)
-    if (queryRef?.current) {
-      queryRef.current.value = username
-    }
+    setText(username)
+  }
+
+  useEffect(() => {
+    localStorage.setItem("recentUsers", JSON.stringify(recentUsers))
+  }, [recentUsers])
+
+  const handleChangeInput = (e: React.FormEvent<HTMLInputElement>) => {
+    const val = e.currentTarget.value
+
+    setText(val)
+
+    clearTimeout(debounceInterval.current)
+
+    debounceInterval.current = setTimeout(() => {
+      if (!val || val.trim() === "") {
+        return
+      }
+
+      searchGithubUser(val).then((data: { items: Array<GithubUser> }) => {
+        setSuggestions(data.items)
+      })
+    }, 1000)
+  }
+
+  const handleSelectSuggestion = (userLogin: string) => {
+    setText(userLogin)
+    setSuggestions([])
+    trySearchUser(userLogin)
   }
 
   return (
     <>
       <form onSubmit={handleSubmit} className="form">
-        <input type="text" placeholder="Enter github Username..." ref={queryRef} />
+        <div className="dropdown-wrapper">
+          <input
+            type="text"
+            placeholder="Enter github Username..."
+            value={text}
+            onChange={handleChangeInput}
+          />
+
+          {suggestions.length > 0 && (
+            <ul className="suggestions">
+              {suggestions.map((user: GithubUser) => (
+                <li key={user.login} onClick={() => handleSelectSuggestion(user.login)}>
+                  <img src={user.avatar_url} alt={user.login} className="avatar-xs" />
+                  {user.login}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <button type="submit">Search</button>
       </form>
 
