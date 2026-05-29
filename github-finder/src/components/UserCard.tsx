@@ -1,8 +1,9 @@
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { FaGithubAlt, FaUserMinus, FaUserPlus } from "react-icons/fa"
-import type { GithubUser } from "../types"
+import { toast } from "sonner"
 
-import { checkIfFollowingUser, followUser } from "../api/github"
+import type { GithubUser } from "../types"
+import { checkIfFollowingUser, followGithubUser, unfollowGithubUser } from "../api/github"
 
 type UserCardProps = {
   user: GithubUser
@@ -13,21 +14,42 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
     return null
   }
 
-  const { data: isFollowing, refetch } = useQuery({
+  // Query: check-if-a-person-is-followed-by-the-authenticated-user
+  const { data: isFollowing, refetch: refetchFollowStatus } = useQuery({
     queryKey: ["follow-status", user.login],
     queryFn: () => checkIfFollowingUser(user.login),
     enabled: user.login !== ""
   })
 
-  // const {} = useMutation({
-  //   mutationFn: () => followUser(user.login)
-  // })
+  // Mutation: follow-a-user
+  const followMutation = useMutation({
+    mutationFn: () => followGithubUser(user.login),
+    onSuccess: () => {
+      toast.success(`You are now following ${user.login}`)
+      refetchFollowStatus()
+    },
+    onError: (err) => {
+      toast.error(err.message)
+    },
+  })
 
-  const handleClick = () => {
+  // Mutation: unfollow-a-user
+  const unfollowMutation = useMutation({
+    mutationFn: () => unfollowGithubUser(user.login),
+    onSuccess: () => {
+      toast.success(`You are no longer following ${user.login}`)
+      refetchFollowStatus()
+    },
+    onError: (err) => {
+      toast.error(err.message)
+    }
+  })
+
+  const handleFollowStatus = () => {
     if (isFollowing) {
-      console.log("Mutate called: Stop Following")
+      unfollowMutation.mutate()
     } else {
-      console.log("Mutate called: Start Following")
+      followMutation.mutate()
     }
   }
 
@@ -38,7 +60,11 @@ const UserCard: React.FC<UserCardProps> = ({ user }) => {
       <p className="bio">{user.bio}</p>
 
       <div className="user-card-buttons">
-        <button className={`follow-btn ${isFollowing ? "following" : ""}`} onClick={handleClick}>
+        <button
+          className={`follow-btn ${isFollowing ? "following" : ""}`}
+          onClick={handleFollowStatus}
+          disabled={followMutation.isPending || unfollowMutation.isPending}
+        >
           {isFollowing ? (
             <>
               <FaUserMinus className="follow-icon" /> Following

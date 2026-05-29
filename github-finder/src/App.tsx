@@ -1,3 +1,5 @@
+import { Toaster } from "sonner"
+
 import UserSearch from "./components/UserSearch"
 
 {/*
@@ -6,13 +8,15 @@ import UserSearch from "./components/UserSearch"
   desc then take the top N
 */}
 
-
 const App = () => {
   return (
-    <div className="container">
-      <h1>Github Finder</h1>
-      <UserSearch />
-    </div>
+    <>
+      <div className="container">
+        <h1>Github Finder</h1>
+        <UserSearch />
+      </div>
+      <Toaster />
+    </>
   )
 }
 
