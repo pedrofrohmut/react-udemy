@@ -1,36 +1,30 @@
-import { createRootRoute, createRoute, createRouter } from "@tanstack/react-router"
+import { createRootRoute, createRouter } from "@tanstack/react-router"
 
-import HomePage from "./HomePage"
-import AboutPage from "./AboutPage"
-import IdeasPage from "./ideas/IdeasPage"
+import HomeRoute from "./HomeRoute"
+import AboutRoute from "./AboutRoute"
+import IdeasRoute from "./ideas/IdeasRoute"
+
 import RootComponent from "./__root"
 
-const rootRoute = createRootRoute({
+export const rootRoute = createRootRoute({
+  head: () => {
+    return {
+      meta: [
+        { title: "IdeaDrop - Your Idea Hub" },
+        {
+          name: "description",
+          content: "Share, explore and build on the best startup ideas and side hustles",
+        },
+      ]
+    }
+  },
   component: RootComponent,
 })
 
-const homeRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/",
-  component: HomePage,
-})
-
-const aboutRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/about",
-  component: AboutPage,
-})
-
-const ideasRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/ideas",
-  component: IdeasPage,
-})
-
 const routeTree = rootRoute.addChildren([
-  homeRoute,
-  aboutRoute,
-  ideasRoute,
+  HomeRoute,
+  AboutRoute,
+  IdeasRoute,
 ])
 
 const router = createRouter({ routeTree })
