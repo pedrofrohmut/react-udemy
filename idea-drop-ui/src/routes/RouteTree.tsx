@@ -1,4 +1,5 @@
-import { createRootRoute, createRouter } from "@tanstack/react-router"
+import { createRootRouteWithContext } from "@tanstack/react-router"
+import { QueryClient } from "@tanstack/react-query"
 
 import RootComponent from "./__root"
 
@@ -7,7 +8,11 @@ import AboutRoute from "./AboutRoute"
 import IdeasRoute from "./ideas/IdeasRoute"
 import IdeasDetailsRoute from "./ideas/IdeasDetailsRoute"
 
-export const rootRoute = createRootRoute({head: () => {return {
+type RouterContext = {
+  queryClient: QueryClient
+}
+
+export const rootRoute = createRootRouteWithContext<RouterContext>()({head: () => {return {
       meta: [
         { title: "IdeaDrop - Your Idea Hub" },
         {
@@ -27,6 +32,4 @@ const routeTree = rootRoute.addChildren([
   IdeasDetailsRoute,
 ])
 
-const router = createRouter({ routeTree })
-
-export default router
+export default routeTree
