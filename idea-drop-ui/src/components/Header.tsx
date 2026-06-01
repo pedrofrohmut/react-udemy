@@ -15,6 +15,13 @@ const Header = () => {
 
         <nav className="flex items-center space-x-4">
           <Link
+            to="/"
+            className="text-gray-200 hover:text-gray-400 font-medium transition px-3 py-2 leading-none"
+          >
+            Home
+          </Link>
+
+          <Link
             to="/ideas"
             className="text-gray-200 hover:text-gray-400 font-medium transition px-3 py-2 leading-none"
           >

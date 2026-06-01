@@ -26,6 +26,6 @@ body {
     background-color: var(--bg-main);
 }
 
-._color-main { color: var(--clr-main) }
+._clr-main { color: var(--clr-main) }
 ._bg-main { background-color: var(--bg-main) }
 ._bg-secondary { background-color: var(--bg-secondary) }

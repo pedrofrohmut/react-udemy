@@ -23,7 +23,7 @@ const IdeasDetailsPage = () => {
   )
 }
 
-const fetchIdea = async (ideaId: string): Promise<Idea | null> => {
+const fetchIdea = async (ideaId: string): Promise<Idea> => {
   const response = await api.get(`/ideas/${ideaId}`)
   return response.data
 }
@@ -39,10 +39,7 @@ const IdeasDetailsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/ideas/$ideaId",
   component: IdeasDetailsPage,
-  loader: async ({ params, context }) => {
-    const { queryClient } = context
-    return queryClient.ensureQueryData(ideaQueryOptions(params.ideaId))
-  },
+  loader: ({ params, context }) => context.queryClient.ensureQueryData(ideaQueryOptions(params.ideaId)),
 })
 
 export default IdeasDetailsRoute
