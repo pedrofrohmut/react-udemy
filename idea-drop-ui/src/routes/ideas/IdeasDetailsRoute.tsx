@@ -14,7 +14,9 @@ const IdeasDetailsPage = () => {
 
   return (
     <div className="p-4">
-      <Link to="/ideas" className="text-blue-500 underline block mb-4">Back to Ideas</Link>
+      <Link to="/ideas" className="text-blue-400 hover:text-blue-600 underline block mb-4">
+        Back to Ideas
+      </Link>
       <h2 className="text-2xl font-bold">{idea.title}</h2>
       <p className="mt-2">{idea.description}</p>
     </div>
