@@ -21,10 +21,15 @@ const IdeasDetailsPage = () => {
   )
 }
 
+const fetchIdea = async (ideaId: string): Promise<Idea | null> => {
+  const response = await api.get(`/ideas/${ideaId}`)
+  return response.data
+}
+
 const ideaQueryOptions = (ideaId: string) => {
   return queryOptions({
     queryKey: ["idea", ideaId],
-    queryFn: () => fetchIdea(ideaId)
+    queryFn: () => fetchIdea(ideaId),
   })
 }
 
@@ -37,10 +42,5 @@ const IdeasDetailsRoute = createRoute({
     return queryClient.ensureQueryData(ideaQueryOptions(params.ideaId))
   },
 })
-
-const fetchIdea = async (ideaId: string): Promise<Idea | null> => {
-  const response = await api.get(`/ideas/${ideaId}`)
-  return response.data
-}
 
 export default IdeasDetailsRoute
