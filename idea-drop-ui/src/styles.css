@@ -1,5 +1,10 @@
-
 @import "tailwindcss";
+
+:root {
+    --bg-main: hsl(0, 0%, 14%);
+    --bg-secondary: hsl(0, 0%, 18%);
+    --clr-main: hsl(0, 0%, 86%);
+}
 
 * {
     box-sizing: border-box;
@@ -17,6 +22,10 @@ body,
 
 body {
     margin: 0;
-    color: #fff;
-    background-color: #242424;
+    color: var(--clr-main);
+    background-color: var(--bg-main);
 }
+
+._color-main { color: var(--clr-main) }
+._bg-main { background-color: var(--bg-main) }
+._bg-secondary { background-color: var(--bg-secondary) }
