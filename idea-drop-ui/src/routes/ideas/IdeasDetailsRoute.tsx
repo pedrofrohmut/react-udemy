@@ -2,7 +2,7 @@ import { createRoute, Link } from "@tanstack/react-router"
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 
 import rootRoute from "../RootRoute"
-import api from "@/lib/axios"
+import { fetchIdea } from "@/ideas-api"
 
 import type { Idea } from "@/types"
 
@@ -21,11 +21,6 @@ const IdeasDetailsPage = () => {
       <p className="mt-2">{idea.description}</p>
     </div>
   )
-}
-
-const fetchIdea = async (ideaId: string): Promise<Idea> => {
-  const response = await api.get(`/ideas/${ideaId}`)
-  return response.data
 }
 
 const ideaQueryOptions = (ideaId: string) => {

@@ -3,8 +3,8 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 import { Lightbulb } from "lucide-react"
 
 import rootRoute from "./RootRoute"
-import api from "@/lib/axios"
 import IdeaCard from "@/components/IdeaCard"
+import { fetchRecentIdeas } from "@/ideas-api"
 
 import type { Idea } from "@/types"
 
@@ -38,21 +38,10 @@ const HomePage = () => {
   )
 }
 
-const fetchRecentIdeas = async (): Promise<Array<Idea>> => {
-  const response = await api.get("/ideas")
-  const ideas = response.data
-  const sorted = ideas.sort((a: Idea, b: Idea) => {
-    const bTime = new Date(b.createdAt).getTime()
-    const aTime = new Date(a.createdAt).getTime()
-    return bTime - aTime
-  })
-  return sorted.slice(0, 3)
-}
-
 const recentIdeasQueryOptions = () => {
   return queryOptions({
     queryKey: ["recentIdeas"],
-    queryFn: () => fetchRecentIdeas(),
+    queryFn: () => fetchRecentIdeas(3),
   })
 }
 

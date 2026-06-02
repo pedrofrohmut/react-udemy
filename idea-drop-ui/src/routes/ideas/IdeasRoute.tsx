@@ -1,9 +1,9 @@
-import { createRoute, Link } from "@tanstack/react-router"
+import { createRoute } from "@tanstack/react-router"
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 
 import rootRoute from "../RootRoute"
 import IdeaCard from "@/components/IdeaCard"
-import api from "@/lib/axios"
+import { fetchRecentIdeas } from "@/ideas-api"
 
 import type { Idea } from "@/types"
 
@@ -24,15 +24,10 @@ const IdeasPage = () => {
   )
 }
 
-const fetchIdeas = async (): Promise<Array<Idea>> => {
-  const response = await api.get("/ideas")
-  return response.data
-}
-
 const ideasQueryOptions = () => {
   return queryOptions({
     queryKey: ["ideas"],
-    queryFn: () => fetchIdeas(),
+    queryFn: () => fetchRecentIdeas(),
   })
 }
 
