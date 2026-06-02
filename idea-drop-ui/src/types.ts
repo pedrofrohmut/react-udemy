@@ -14,3 +14,11 @@ export type NewIdea = {
   description: string
   tags: Array<string>
 }
+
+export type EditIdea = {
+  id: string
+  title: string
+  summary: string
+  description: string
+  tags: Array<string>
+}

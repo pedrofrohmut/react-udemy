@@ -1,24 +1,30 @@
-import { createRoute, useNavigate } from "@tanstack/react-router"
-import { useMutation } from "@tanstack/react-query"
-import { useRef } from "react"
+import { createRoute, Link, useNavigate } from "@tanstack/react-router"
+import { useMutation, useSuspenseQuery, queryOptions } from "@tanstack/react-query"
+import { useRef, useEffect } from "react"
 
-import { createIdea } from "@/ideas-api"
 import rootRoute from "../RootRoute"
+import { editIdea, fetchIdea } from "@/ideas-api"
 
-import type { NewIdea } from "@/types"
+import type { Idea, EditIdea } from "@/types"
 
-const NewIdeaPage = () => {
+const EditIdeaPage = () => {
+  const params = EditIdeaRoute.useParams()
   const navigate = useNavigate()
+
+  const { data } = useSuspenseQuery(ideaQueryOptions(params.ideaId))
+  const idea: Idea = data
+
+  if (!idea) return <>No idea found</>
 
   const titleRef = useRef<HTMLInputElement>(null)
   const summaryRef = useRef<HTMLInputElement>(null)
   const descriptionRef = useRef<HTMLTextAreaElement>(null)
   const tagsRef = useRef<HTMLInputElement>(null)
 
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: (newIdea: NewIdea) => createIdea(newIdea),
+  const { mutateAsync } = useMutation({
+    mutationFn: (idea: EditIdea) => editIdea(idea),
     onSuccess: () => {
-      navigate({ to: "/ideas" })
+      navigate({ to: `/ideas/${params.ideaId}` })
     },
   })
 
@@ -39,7 +45,7 @@ const NewIdeaPage = () => {
     const tags: Array<string> = tagsInput !== "" ? tagsInput.split(",").map(x => x.trim()).filter(x => x !== "") : []
 
     try {
-      await mutateAsync({ title, summary, description, tags })
+      await mutateAsync({ id: params.ideaId, title, summary, description, tags })
     } catch (err) {
       console.error(err)
       alert("Something went wrong. A new idea could not be added.")
@@ -47,11 +53,17 @@ const NewIdeaPage = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
 
-      <h1 className="text-3xl font-bold mb-6">Create New Idea</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Edit Idea</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+        <Link to="/ideas/$ideaId" params={{ ideaId: params.ideaId }} className="text-sm text-blue-400 hover:underline">
+           ← Back To Idea
+        </Link>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-2">
         <div>
           <label htmlFor="title" className="block text-gray-200 font-medium mb-1">Title</label>
           <input
@@ -60,6 +72,7 @@ const NewIdeaPage = () => {
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter idea title"
             ref={titleRef}
+            defaultValue={idea.title}
           />
         </div>
 
@@ -71,6 +84,7 @@ const NewIdeaPage = () => {
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter idea summary"
             ref={summaryRef}
+            defaultValue={idea.summary}
           />
         </div>
 
@@ -82,6 +96,7 @@ const NewIdeaPage = () => {
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Write out the description of your idea"
             ref={descriptionRef}
+            defaultValue={idea.description}
           />
         </div>
 
@@ -93,29 +108,36 @@ const NewIdeaPage = () => {
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="optional tags, comma separated"
             ref={tagsRef}
+            defaultValue={idea.tags}
           />
         </div>
 
         <div className="mt-5">
           <button
             type="submit"
-            disabled={isPending}
-            className="bg-blue-600 hover:bg-blue-800 text-gray-200 font-semibold px-6 py-2 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-blue-600 hover:bg-blue-700 text-gray-200 font-semibold px-6 py-2 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isPending ? "Creating..." : "Create Idea"}
+             Update Idea
           </button>
         </div>
-
       </form>
 
     </div>
   )
 }
 
-const NewIdeaRoute = createRoute({
+const ideaQueryOptions = (ideaId: string) => {
+  return queryOptions({
+    queryKey: ["idea", ideaId],
+    queryFn: () => fetchIdea(ideaId),
+  })
+}
+
+const EditIdeaRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: "/ideas/new",
-  component: NewIdeaPage,
+  path: "/ideas/$ideaId/edit",
+  component: EditIdeaPage,
+  loader: ({ params, context }) => context.queryClient.ensureQueryData(ideaQueryOptions(params.ideaId)),
 })
 
-export default NewIdeaRoute
+export default EditIdeaRoute
