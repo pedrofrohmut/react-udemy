@@ -1,6 +1,9 @@
-import express from "express"
+import express, { Request, Response, NextFunction } from "express"
 import cors from "cors"
 import dotenv from "dotenv"
+
+import routeIdeas from "./routes/ideas-routes"
+import { errorHandling } from "./middleware/error-handling"
 
 dotenv.config()
 
@@ -17,20 +20,20 @@ app.get("/health", (req, res) => {
   res.send("Server is online")
 })
 
-let ideas = [
-  { id: 1, title: "Idea 1", description: "Idea 1 description" },
-  { id: 2, title: "Idea 2", description: "Idea 2 description" },
-  { id: 3, title: "Idea 3", description: "Idea 3 description" },
-]
+// Register routes
+const router = express.Router()
+routeIdeas(router, "/api/ideas")
+app.use("/", router)
 
-app.get("/api/ideas", (req, res) => {
-  res.json(ideas)
+// 404 fallback
+app.use((req: Request, res: Response, next: NextFunction) => {
+  const error = new Error(`Not found - ${req.originalUrl}`)
+  res.status(404)
+  next(error)
 })
 
-app.post("/api/ideas", (req, res) => {
-  ideas.push(req.body)
-  res.status(201).json(ideas)
-})
+// error middleware
+app.use(errorHandling)
 
 app.listen(PORT, () => {
   console.log(`Node/Express server listen on port: ${PORT}`)
