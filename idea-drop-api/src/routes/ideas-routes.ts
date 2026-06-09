@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express"
+import IdeaModel from "../models/idea-model"
 
 let ideas = [
   { id: 1, title: "Idea 1", description: "Idea 1 description" },
@@ -9,11 +10,27 @@ let ideas = [
 // Base url: /api/ideas
 const routeIdeas = (router: Router, baseUrl: string): void => {
   // public GET /api/ideas
-  router.get(baseUrl, (req: Request, res: Response): void => {
-    res.status(400)
-    throw new Error("Test error")
+  router.get(baseUrl, async (req: Request, res: Response): Promise<any> => {
+    try {
+      const ideas = await IdeaModel.find()
+      res.json(ideas)
+    } catch (err) {
+      res.status(500).send("Unexpected error occured trying to get all ideas.")
+    }
+  })
 
-    res.json(ideas)
+  // public GET /api/ideas/:id
+  router.get(`${baseUrl}/:id`, async (req: Request, res: Response): Promise<any> => {
+    try {
+      const idea = await IdeaModel.findById(req.params.id)
+      if (!idea) {
+        res.status(404)
+        throw new Error("Idea not found")
+      }
+      res.json(idea)
+    } catch (err) {
+      res.status(500).send("Unexpected error occured trying to get all ideas.")
+    }
   })
 
   // public POST /api/ideas

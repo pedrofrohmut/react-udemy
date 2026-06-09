@@ -1,40 +1,49 @@
 import express, { Request, Response, NextFunction } from "express"
 import cors from "cors"
 import dotenv from "dotenv"
+import mongoose from "mongoose"
 
 import routeIdeas from "./routes/ideas-routes"
 import { errorHandling } from "./middleware/error-handling"
+import connectMongoDb from "./config/db-connection"
 
-dotenv.config()
+const main = async () => {
+  dotenv.config() // Init dotenv
 
-const app = express()
-const PORT = process.env.PORT || 8080
+  const conn = await connectMongoDb()
+  if (!conn) {
+    process.exit(1)
+  }
 
-// Middlewares
-app.use(cors())
-app.use(express.json()) // parse json request body
-app.use(express.urlencoded({ extended: true })) // parse form data
+  const app = express() // Init express
+  const PORT = process.env.PORT || 8080
 
-// Register /health endpoint
-app.get("/health", (req, res) => {
-  res.send("Server is online")
-})
+  // Middlewares
+  app.use(cors())
+  app.use(express.json()) // parse json request body
+  app.use(express.urlencoded({ extended: true })) // parse form data
 
-// Register routes
-const router = express.Router()
-routeIdeas(router, "/api/ideas")
-app.use("/", router)
+  // Register /health endpoint
+  app.get("/health", (req, res) => res.send("Server is online"))
 
-// 404 fallback
-app.use((req: Request, res: Response, next: NextFunction) => {
-  const error = new Error(`Not found - ${req.originalUrl}`)
-  res.status(404)
-  next(error)
-})
+  // Register routes
+  const router = express.Router()
+  routeIdeas(router, "/api/ideas")
+  app.use("/", router)
 
-// error middleware
-app.use(errorHandling)
+  // 404 fallback
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    const error = new Error(`Not found - ${req.originalUrl}`)
+    res.status(404)
+    next(error)
+  })
 
-app.listen(PORT, () => {
-  console.log(`Node/Express server listen on port: ${PORT}`)
-})
+  // error middleware
+  app.use(errorHandling)
+
+  app.listen(PORT, () => {
+    console.log(`Node/Express server listen on port: ${PORT}`)
+  })
+}
+
+main()

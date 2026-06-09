@@ -4,8 +4,10 @@
   "description": "Backend for idea drop ui",
   "main": "src/server.ts",
   "scripts": {
-    "start": "ts-node src/server.ts",
-    "dev": "node --watch -r ts-node/register src/server.ts"
+    "build": "tsc --noEmit false",
+    "start": "tsx src/server.ts",
+    "dev": "tsx watch --inspect=9229 src/server.ts",
+    "populate": "tsx ./data-import/populate.ts"
   },
   "keywords": [],
   "author": "Pedro Frohmut",
@@ -22,7 +24,7 @@
     "@types/express": "^5.0.6",
     "@types/mongoose": "^5.11.96",
     "@types/node": "^25.9.1",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   }
 }
