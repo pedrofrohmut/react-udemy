@@ -30,9 +30,28 @@ const routeIdeas = (router: Router, baseUrl: string): void => {
   // public POST /api/ideas
   router.post(baseUrl, async (req: Request, res: Response): Promise<void> => {
     const { title, summary, description, tags } = req.body
-    // TODO: Add validations
+
+    if (!title.trim() || !summary.trim() || !description.trim()) {
+      res.status(400).json({ message: "Title, summary and description are all required." })
+      return
+    }
+
+    let tagsArray: Array<string> = []
+    if (tags && typeof tags === "string") {
+      tagsArray = tags.split(",")
+                      .map(tag => tag.trim())
+                      .filter(tag => tag !== "")
+    } else if (tags && Array.isArray(tags)) {
+      tagsArray = tags.filter(tag => tag !== "")
+    } else if (tags) {
+      res.status(400).json({
+        message: "Invalid format for tags. It can be a string with comma separated values of an array of strings"
+      })
+      return
+    }
+
     try {
-      const model = new IdeaModel({ title, summary, description, tags })
+      const model = new IdeaModel({ title, summary, description, tags: tagsArray })
       await model.save()
       res.status(201).json(model)
     } catch (err) {
