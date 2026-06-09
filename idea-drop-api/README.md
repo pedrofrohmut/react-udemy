@@ -10,6 +10,7 @@ Links
 - [Cors](https://github.com/expressjs/cors)
 - [Mongo DB](https://www.mongodb.com/docs/)
 - [Mongoose (Mongo ORM)](https://mongoosejs.com/docs/guide.html)
+- [Mongo Docker](https://hub.docker.com/_/mongo/)
 
 Dev Links
 
@@ -17,3 +18,5 @@ Dev Links
 - [TSConfig](https://www.typescriptlang.org/tsconfig/)
 - [TSNode](https://github.com/TypeStrong/ts-node)
 - [Nodemon](https://github.com/remy/nodemon)
+- [MongoShell](https://www.mongodb.com/docs/mongodb-shell/)
+- [MyIp](https://nordvpn.com/what-is-my-ip/)

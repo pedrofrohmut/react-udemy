@@ -1,12 +1,6 @@
 import { Router, Request, Response } from "express"
 import IdeaModel from "../models/idea-model"
 
-let ideas = [
-  { id: 1, title: "Idea 1", description: "Idea 1 description" },
-  { id: 2, title: "Idea 2", description: "Idea 2 description" },
-  { id: 3, title: "Idea 3", description: "Idea 3 description" },
-]
-
 // Base url: /api/ideas
 const routeIdeas = (router: Router, baseUrl: string): void => {
   // public GET /api/ideas
@@ -24,19 +18,26 @@ const routeIdeas = (router: Router, baseUrl: string): void => {
     try {
       const idea = await IdeaModel.findById(req.params.id)
       if (!idea) {
-        res.status(404)
-        throw new Error("Idea not found")
+        res.status(404).json({ message: "Idea not found" })
+        return
       }
       res.json(idea)
     } catch (err) {
-      res.status(500).send("Unexpected error occured trying to get all ideas.")
+      res.status(500).send("Unexpected error occured trying to get idea by id.")
     }
   })
 
   // public POST /api/ideas
-  router.post(baseUrl, (req: Request, res: Response): void => {
-    ideas.push(req.body)
-    res.status(201).json(ideas)
+  router.post(baseUrl, async (req: Request, res: Response): Promise<void> => {
+    const { title, summary, description, tags } = req.body
+    // TODO: Add validations
+    try {
+      const model = new IdeaModel({ title, summary, description, tags })
+      await model.save()
+      res.status(201).json(model)
+    } catch (err) {
+      res.status(500).send("Unexpected error occured trying to save a new idea.")
+    }
   })
 }
 
