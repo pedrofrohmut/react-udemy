@@ -1,5 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express"
-import IdeaModel from "../models/idea-model"
+import IdeaModel, { ideaDbToOutput } from "../models/idea-model"
+
+import type { IdeaOutput, IdeaDb } from "../types"
 
 const getTagsArray = (tags?: string | Array<string>): { ok: boolean, tagsArray: Array<string> } => {
   if (!tags) {
@@ -25,7 +27,8 @@ const routeIdeas = (router: Router, baseUrl: string): void => {
   router.get(baseUrl, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const ideas = await IdeaModel.find()
-      res.json(ideas)
+      const ideasOutput = ideas.map(idea => ideaDbToOutput(idea as any))
+      res.json(ideasOutput)
     } catch (err) {
       // res.status(500).send("Unexpected error occured trying to get all ideas.")
       if (err instanceof Error) {
@@ -42,7 +45,8 @@ const routeIdeas = (router: Router, baseUrl: string): void => {
         res.status(404).json({ message: "Idea not found" })
         return
       }
-      res.json(idea)
+      const ideaOutput = ideaDbToOutput(idea as any)
+      res.json(ideaOutput)
     } catch (err) {
       // res.status(500).send("Unexpected error occured trying to get idea by id.")
       if (err instanceof Error) {
