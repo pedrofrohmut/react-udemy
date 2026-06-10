@@ -1,5 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express"
+
 import IdeaModel, { ideaDbToOutput } from "../models/idea-model"
+import { isNumber } from "../utils"
 
 import type { IdeaOutput, IdeaDb } from "../types"
 
@@ -23,11 +25,38 @@ const getTagsArray = (tags?: string | Array<string>): { ok: boolean, tagsArray: 
 // Base url: /api/ideas
 const routeIdeas = (router: Router, baseUrl: string): void => {
 
-  // public GET /api/ideas
+  // @route GET /api/ideas
+  // @description Get all ideas
+  // @access public
+  // @query limit (limit the number of results)
+  // @query sort (the type of sorting)
+  // @query order (if the sorting is asc or desc. have no effect without sort provided)
   router.get(baseUrl, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const ideas = await IdeaModel.find()
-      const ideasOutput = ideas.map(idea => ideaDbToOutput(idea as any))
+      const { sort, order } = req.query
+
+      let query = IdeaModel.find()
+
+      // Apply Sorting
+      if (sort) {
+        switch (sort) {
+          case "date": {
+            if (order == "desc") {
+              query = query.sort({ createdAt: -1 })
+            } else if (order == "asc") {
+              query = query.sort({ createdAt: 1 })
+            }
+          } break
+        }
+      }
+
+      // Apply limit
+      const limit = isNumber(req.query.limit) ? parseInt(req.query.limit as string) : 10
+      query = query.limit(limit)
+
+      const ideasDb = await query.exec()
+
+      const ideasOutput = ideasDb.map(idea => ideaDbToOutput(idea as any))
       res.json(ideasOutput)
     } catch (err) {
       // res.status(500).send("Unexpected error occured trying to get all ideas.")
@@ -37,7 +66,9 @@ const routeIdeas = (router: Router, baseUrl: string): void => {
     }
   })
 
-  // public GET /api/ideas/:id
+  // @route Get /api/ideas/:id
+  // @description Get a single idea by id
+  // @access public
   router.get(`${baseUrl}/:id`, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const idea = await IdeaModel.findById(req.params.id)
@@ -55,7 +86,9 @@ const routeIdeas = (router: Router, baseUrl: string): void => {
     }
   })
 
-  // public POST /api/ideas
+  // @route POST /api/ideas
+  // @description Create a new idea
+  // @access public
   router.post(baseUrl, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const { title, summary, description, tags } = req.body
 
@@ -85,7 +118,9 @@ const routeIdeas = (router: Router, baseUrl: string): void => {
     }
   })
 
-  // public PUT /api/ideas/:id
+  // @route PUT /api/ideas/:id
+  // @description Update a single idea
+  // @access public
   router.put(`${baseUrl}/:id`, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     // const { title, summary, description, tags } = req.body
     try {
@@ -123,7 +158,9 @@ const routeIdeas = (router: Router, baseUrl: string): void => {
     }
   })
 
-  // public DELETE /api/ideas/:id
+  // @route DELETE /api/ideas/:id
+  // @description delete a single ides
+  // @access public
   router.delete(`${baseUrl}/:id`, async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const idea = await IdeaModel.findById(req.params.id)

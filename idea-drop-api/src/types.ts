@@ -6,6 +6,8 @@ export type IdeaOutput = {
   summary: string
   description: string
   tags: Array<string>
+  createdAt: string
+  updatedAt: string
 }
 
 export type IdeaDb = {

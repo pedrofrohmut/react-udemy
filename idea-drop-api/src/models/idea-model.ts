@@ -19,6 +19,8 @@ export const ideaDbToOutput = (ideaDb: IdeaDb): IdeaOutput => ({
   summary: ideaDb.summary,
   description: ideaDb.description,
   tags: ideaDb.tags,
+  createdAt: ideaDb.createdAt,
+  updatedAt: ideaDb.updatedAt,
 })
 
 export default IdeaModel
