@@ -2,21 +2,15 @@ import api from "@/lib/axios"
 
 import type { Idea, NewIdea, EditIdea } from "@/types"
 
-export const fetchRecentIdeas = async (limit?: number): Promise<Array<Idea>> => {
-  const response = await api.get("/ideas")
-  const ideas = response.data
-
-  const sorted = ideas.sort((a: Idea, b: Idea) => {
-    const bTime = new Date(b.createdAt).getTime()
-    const aTime = new Date(a.createdAt).getTime()
-    return bTime - aTime
-  })
-
-  if (!limit) {
-    return sorted
+export const fetchRecentIdeas = async (limit: number = 0): Promise<Array<Idea>> => {
+  let url = "/ideas"
+  url += "?sort=date&order=desc" // Sort by latest
+  if (limit && limit > 0) {
+    url +=  "&limit=" + limit    // Add limit if informed
   }
 
-  return sorted.slice(0, limit)
+  const response = await api.get(url)
+  return response.data
 }
 
 export const fetchIdeas = async (): Promise<Array<Idea>> => {

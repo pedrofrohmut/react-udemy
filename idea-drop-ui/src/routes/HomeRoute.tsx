@@ -23,11 +23,13 @@ const HomePage = () => {
       <section className="flex-1">
         <h2 className="text-2xl font-semibold mb-4 text-gray-200">Latest Ideas</h2>
 
-        <ul className="space-y-6">
-          {recentIdeas && recentIdeas.map((idea: Idea) => (
-            <IdeaCard key={idea.id} idea={idea} />
-          ))}
-        </ul>
+        {Array.isArray(recentIdeas) && recentIdeas.length > 0 && (
+          <ul className="space-y-6">
+            {recentIdeas.map((idea: Idea) => (
+              <IdeaCard key={idea.id} idea={idea} />
+            ))}
+          </ul>
+        )}
 
         <div className="mt-6">
           <Link to="/ideas" className="text-blue-400 hover:text-blue-600">View All Ideas</Link>
