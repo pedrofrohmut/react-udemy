@@ -13,9 +13,11 @@
   "author": "Pedro Frohmut",
   "license": "MIT",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "jose": "^6.2.3",
     "mongoose": "^9.6.3"
   },
   "devDependencies": {

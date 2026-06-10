@@ -23,7 +23,7 @@ const getTagsArray = (tags?: string | Array<string>): { ok: boolean, tagsArray: 
 }
 
 // Base url: /api/ideas
-const routeIdeas = (router: Router, baseUrl: string): void => {
+const registerIdeasRoutes = (router: Router, baseUrl: string): void => {
 
   // @route GET /api/ideas
   // @description Get all ideas
@@ -182,4 +182,4 @@ const routeIdeas = (router: Router, baseUrl: string): void => {
 
 }
 
-export default routeIdeas
+export default registerIdeasRoutes

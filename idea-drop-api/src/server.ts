@@ -3,7 +3,8 @@ import cors from "cors"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
 
-import routeIdeas from "./routes/ideas-routes"
+import registerIdeasRoutes from "./routes/ideas-routes"
+import registerUsersRoutes from "./routes/users-routes"
 import { errorHandling } from "./middleware/error-handling"
 import connectMongoDb from "./config/db-connection"
 
@@ -28,7 +29,8 @@ const main = async () => {
 
   // Register routes
   const router = express.Router()
-  routeIdeas(router, "/api/ideas")
+  registerUsersRoutes(router, "/api/users")
+  registerIdeasRoutes(router, "/api/ideas")
   app.use("/", router)
 
   // 404 fallback
