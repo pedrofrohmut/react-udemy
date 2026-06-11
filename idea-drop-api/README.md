@@ -11,6 +11,8 @@ Links
 - [Mongo DB](https://www.mongodb.com/docs/)
 - [Mongoose (Mongo ORM)](https://mongoosejs.com/docs/guide.html)
 - [Mongo Docker](https://hub.docker.com/_/mongo/)
+- [Jose JWT](https://github.com/panva/jose)
+- [Bcrypt](https://github.com/dcodeIO/bcrypt.js)
 
 Dev Links
 

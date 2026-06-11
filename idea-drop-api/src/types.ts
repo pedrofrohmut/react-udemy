@@ -1,4 +1,4 @@
-import { ObjectId } from "mongoose"
+import { Types } from "mongoose"
 
 export type IdeaOutput = {
   id: string
@@ -11,11 +11,21 @@ export type IdeaOutput = {
 }
 
 export type IdeaDb = {
-  _id: ObjectId
+  _id: Types.ObjectId
   title: string
   summary: string
   description: string
   tags: Array<string>
+  createdAt: string
+  updatedAt: string
+  __v: number
+}
+
+export type UserDb = {
+  _id: Types.ObjectId
+  name: string
+  email: string
+  passwordHash: string
   createdAt: string
   updatedAt: string
   __v: number
