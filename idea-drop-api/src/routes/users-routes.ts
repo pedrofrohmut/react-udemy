@@ -140,6 +140,16 @@ const registerUsersRoutes = (router: Router, baseUrl: string): void => {
     }
   })
 
+  // @route POST /api/users/signout
+  // @description Signs out a user - destroys the refreshToken
+  // @access authenticated
+  router.post(`${baseUrl}/signout`, (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    // res.clearCookie("refreshToken", { httpOnly: true, secure: true, sameSite: "none" })
+    res.clearCookie("refreshToken") // TODO: Check if you need options. Use above line if so
+    res.status(200)
+    res.json({ message: "User signed out" })
+  })
+
 }
 
 export default registerUsersRoutes
