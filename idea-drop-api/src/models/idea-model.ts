@@ -4,7 +4,8 @@ import type { IdeaDb, IdeaOutput } from "../types"
 
 const options = { timestamps: true }
 
-const ideaSchema = new mongoose.Schema({
+const ideaSchema = new mongoose.Schema(
+  {
     title: { type: String, required: true, trim: true },
     summary: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },

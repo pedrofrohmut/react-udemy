@@ -59,9 +59,9 @@ const registerIdeasRoutes = (router: Router, baseUrl: string): void => {
       const ideasOutput = ideasDb.map(idea => ideaDbToOutput(idea as any))
       res.json(ideasOutput)
     } catch (err) {
-      // res.status(500).send("Unexpected error occured trying to get all ideas.")
+      // res.status(500).send("Unexpected error occurred trying to get all ideas.")
       if (err instanceof Error) {
-        next(new Error("Unexpected error occured trying to get all ideas."))
+        next(new Error("Unexpected error occurred trying to get all ideas."))
       }
     }
   })
@@ -79,9 +79,9 @@ const registerIdeasRoutes = (router: Router, baseUrl: string): void => {
       const ideaOutput = ideaDbToOutput(idea as any)
       res.json(ideaOutput)
     } catch (err) {
-      // res.status(500).send("Unexpected error occured trying to get idea by id.")
+      // res.status(500).send("Unexpected error occurred trying to get idea by id.")
       if (err instanceof Error) {
-        next(new Error("Unexpected error occured trying to get idea by id."))
+        next(new Error("Unexpected error occurred trying to get idea by id."))
       }
     }
   })
@@ -111,9 +111,9 @@ const registerIdeasRoutes = (router: Router, baseUrl: string): void => {
 
       res.status(201).json(model)
     } catch (err) {
-      // res.status(500).send("Unexpected error occured trying to save a new idea.")
+      // res.status(500).send("Unexpected error occurred trying to save a new idea.")
       if (err instanceof Error) {
-        next(new Error("Unexpected error occured trying to save a new idea: " + err.message))
+        next(new Error("Unexpected error occurred trying to save a new idea: " + err.message))
       }
     }
   })
@@ -150,9 +150,9 @@ const registerIdeasRoutes = (router: Router, baseUrl: string): void => {
       res.status(204).send("")
     } catch (err) {
       if (err instanceof Error) {
-        // res.status(500).send("Unexpected error occured when trying to update an idea")
+        // res.status(500).send("Unexpected error occurred when trying to update an idea")
         if (err instanceof Error) {
-          next(new Error("Unexpected error occured when trying to update an idea: " + err.message))
+          next(new Error("Unexpected error occurred when trying to update an idea: " + err.message))
         }
       }
     }
@@ -173,9 +173,9 @@ const registerIdeasRoutes = (router: Router, baseUrl: string): void => {
 
       res.status(204).send("")
     } catch (err) {
-      // res.status(500).send("Unexpected error occured when trying to delete an idea")
+      // res.status(500).send("Unexpected error occurred when trying to delete an idea")
       if (err instanceof Error) {
-        next(new Error("Unexpected error occured when trying to delete an idea"))
+        next(new Error("Unexpected error occurred when trying to delete an idea"))
       }
     }
   })
