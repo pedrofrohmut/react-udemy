@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser"
 
 import registerIdeasRoutes from "./routes/ideas-routes"
 import registerUsersRoutes from "./routes/users-routes"
-import { errorHandling } from "./middleware/error-handling"
+import { errorHandling } from "./middleware/error-handling-middleware"
 import connectMongoDb from "./config/db-connection"
 
 const main = async () => {

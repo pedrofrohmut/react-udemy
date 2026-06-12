@@ -23,6 +23,7 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction): Pro
       customErr.name = "Get All User Error"
       customErr.stack = err.stack
       next(customErr)
+      return
     }
     console.log("Unknown error trying to get all users", err)
   }
@@ -30,42 +31,44 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction): Pro
 
 const signUp = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const { name, email, password } = req.body
+    const { name, email, password } = req.body || {}
 
     // Request body validation
-    if (!name     || !name.trim()     ||
-        !email    || !email.trim()    ||
-          !password || !password.trim() || (password && password.length <= 3))
-      {
-        res.status(400)
-        if (password && password.length <= 3) {
-          res.json({ message: "Password must be at least 4 characters long" })
-        } else {
-          res.json({ message: "name, email and password are required to sign up" })
-        }
-        return
+    if (
+      !name     || !name.trim()     ||
+      !email    || !email.trim()    ||
+      !password || !password.trim() || password.length <= 3
+    ) {
+      res.status(400)
+      if (password && password.length <= 3) {
+        res.json({ message: "Password must be at least 4 characters long" })
+      } else {
+        res.json({ message: "name, email and password are required to sign up" })
       }
+      return
+    }
 
-      const userDb = await UserModel.find({ email })
-      if (userDb) {
-        res.status(400)
-        res.json({ message: "User with this e-mail already exists. This e-mail is not available." })
-        return
-      }
+    const userDb = await UserModel.find({ email })
+    if (userDb) {
+      res.status(400)
+      res.json({ message: "User with this e-mail already exists. This e-mail is not available." })
+      return
+    }
 
-      const passwordHash = hashPassword(password)
+    const passwordHash = hashPassword(password)
 
-      // Save to mongo
-      const query = new UserModel({ name, email, passwordHash })
-      await query.save()
+    // Save to mongo
+    const query = new UserModel({ name, email, passwordHash })
+    await query.save()
 
-      res.status(201).json({ message: "User created" })
+    res.status(201).json({ message: "User created" })
   } catch (err) {
     if (err instanceof Error) {
       const customErr = new Error("Unexpected error occurred trying to sign up")
       customErr.name = "SignUp Error"
       customErr.stack = err.stack
       next(customErr)
+      return
     }
     console.log("Unknown error trying to sign up: ", err)
   }
@@ -74,13 +77,7 @@ const signUp = async (req: Request, res: Response, next: NextFunction): Promise<
 const signIn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     // Validate request body
-    if (!req.body) {
-      res.status(400)
-      res.json({ message: "email and password are required to sign in" })
-      return
-    }
-
-    const { email, password } = req.body
+    const { email, password } = req.body || {}
 
     if (!email || (email && !email.trim()) || !password || (password && !password.trim())) {
       res.status(400)
@@ -130,6 +127,7 @@ const signIn = async (req: Request, res: Response, next: NextFunction): Promise<
       customErr.name = "SignIn Error"
       customErr.stack = err.stack
       next(customErr)
+      return
     }
     console.log("Unknown error trying to sign in: ", err)
   }
@@ -147,6 +145,7 @@ const signOut = (req: Request, res: Response, next: NextFunction): void => {
       customErr.name = "SignOut Error"
       customErr.stack = err.stack
       next(customErr)
+      return
     }
     console.log("Unknown error trying to sign out: ", err)
   }

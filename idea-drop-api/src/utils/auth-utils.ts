@@ -15,7 +15,8 @@ export const getJWTSecret = () => {
  */
 export const generateJWT = async (payload: any, expirationType: string): Promise<string> => {
   const alg = "HS256"
-  const expiration = expirationType === "long" ? "30d" : "1m"
+  // const expiration = expirationType === "long" ? "30d" : "1m"
+  const expiration = expirationType === "long" ? "30d" : "10m" // TODO: 10 min for development only
   const secret = getJWTSecret()
 
   const jwt =
@@ -43,9 +44,9 @@ export const getUserIdFromToken = async (token: string): Promise<string> => {
   try {
     const secret = getJWTSecret()
     const { payload } = await jwtVerify(token, secret)
-    return payload?.userId || ""
+    return payload?.userId as string || "NO TOKEN"
   } catch (err) {
     console.error(err)
-    return ""
+    return "TOKEN ERROR"
   }
 }
