@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express"
 import cors from "cors"
 import dotenv from "dotenv"
 import mongoose from "mongoose"
+import cookieParser from "cookie-parser"
 
 import registerIdeasRoutes from "./routes/ideas-routes"
 import registerUsersRoutes from "./routes/users-routes"
@@ -23,6 +24,7 @@ const main = async () => {
   app.use(cors())
   app.use(express.json()) // parse json request body
   app.use(express.urlencoded({ extended: true })) // parse form data
+  app.use(cookieParser())
 
   // Register /health endpoint
   app.get("/health", (req, res) => res.send("Server is online"))

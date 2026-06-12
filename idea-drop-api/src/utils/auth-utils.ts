@@ -1,4 +1,4 @@
-import { SignJWT } from "jose"
+import { SignJWT, jwtVerify } from "jose"
 import dotenv from "dotenv"
 import bcrypt from "bcryptjs"
 
@@ -37,4 +37,15 @@ export const hashPassword = async (password: string): Promise<string> => {
 export const matchPasswordAndHash = async (password: string, hash: string): Promise<boolean> => {
   const isMatch = await bcrypt.compare(password, hash)
   return isMatch
+}
+
+export const getUserIdFromToken = async (token: string): Promise<string> => {
+  try {
+    const secret = getJWTSecret()
+    const { payload } = await jwtVerify(token, secret)
+    return payload?.userId || ""
+  } catch (err) {
+    console.error(err)
+    return ""
+  }
 }

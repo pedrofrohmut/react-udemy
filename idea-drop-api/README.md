@@ -13,6 +13,7 @@ Links
 - [Mongo Docker](https://hub.docker.com/_/mongo/)
 - [Jose JWT](https://github.com/panva/jose)
 - [Bcrypt](https://github.com/dcodeIO/bcrypt.js)
+- [Cookie Parser](https://github.com/expressjs/cookie-parser)
 
 Dev Links
 
