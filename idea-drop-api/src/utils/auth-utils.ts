@@ -46,7 +46,6 @@ export const getUserIdFromToken = async (token: string): Promise<string> => {
     const { payload } = await jwtVerify(token, secret)
     return payload?.userId as string || "NO TOKEN"
   } catch (err) {
-    console.error(err)
     return "TOKEN ERROR"
   }
 }

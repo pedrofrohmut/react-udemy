@@ -19,14 +19,16 @@ const getAllUsers = async (req: Request, res: Response, next: NextFunction): Pro
     res.status(200)
     res.json(users)
   } catch (err) {
-    if (err instanceof Error) {
-      const customErr = new Error("Unexpected error occurred trying to get all users")
-      customErr.name = "Get All User Error"
-      customErr.stack = err.stack
-      next(customErr)
+    if (!isError(err)) {
+      console.log("Unknown error trying to get all users", err)
+      next(err)
       return
     }
-    console.log("Unknown error trying to get all users", err)
+
+    const customErr = new Error("Unexpected error occurred trying to get all users: " + err.message)
+    customErr.name = "UsersRoutes:GetAllUsers Error"
+    customErr.stack = err.stack
+    next(customErr)
   }
 }
 
@@ -64,14 +66,16 @@ const signUp = async (req: Request, res: Response, next: NextFunction): Promise<
 
     res.status(201).json({ message: "User created" })
   } catch (err) {
-    if (isError(err)) {
-      const customErr = new Error("Unexpected error occurred trying to sign up")
-      customErr.name = "SignUp Error"
-      customErr.stack = err.stack
-      next(customErr)
+    if (!isError(err)) {
+      console.log("Unknown error trying to sign up: ", err)
+      next(err)
       return
     }
-    console.log("Unknown error trying to sign up: ", err)
+
+    const customErr = new Error("Unexpected error occurred trying to sign up: " + err.message)
+    customErr.name = "UsersRoutes:SignUp Error"
+    customErr.stack = err.stack
+    next(customErr)
   }
 }
 
@@ -123,14 +127,16 @@ const signIn = async (req: Request, res: Response, next: NextFunction): Promise<
       accessToken,
     })
   } catch (err) {
-    if (err instanceof Error) {
-      const customErr = new Error("Unexpected error occurred trying to sign in")
-      customErr.name = "SignIn Error"
-      customErr.stack = err.stack
-      next(customErr)
+    if (!isError(err)) {
+      console.log("Unknown error trying to sign in: ", err)
+      next(err)
       return
     }
-    console.log("Unknown error trying to sign in: ", err)
+
+    const customErr = new Error("Unexpected error occurred trying to sign in: " + err.message)
+    customErr.name = "UsersRoutes:SignIn Error"
+    customErr.stack = err.stack
+    next(customErr)
   }
 }
 
@@ -141,29 +147,31 @@ const signOut = (req: Request, res: Response, next: NextFunction): void => {
     res.status(200)
     res.json({ message: "User signed out" })
   } catch (err) {
-    if (err instanceof Error) {
-      const customErr = new Error("Unexpected error occurred trying to sign out")
-      customErr.name = "SignOut Error"
-      customErr.stack = err.stack
-      next(customErr)
+    if (!isError(err)) {
+      console.log("Unknown error trying to sign out: ", err)
+      next(err)
       return
     }
-    console.log("Unknown error trying to sign out: ", err)
+
+    const customErr = new Error("Unexpected error occurred trying to sign out: " + err.message)
+    customErr.name = "UsersRoutes:SignOut Error"
+    customErr.stack = err.stack
+    next(customErr)
   }
 }
 
 const refresh = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
     // Get token from request
-    const token = req.cookies?.refreshToken
-    if (!token) {
+    const cookieToken = req.cookies?.refreshToken
+    if (!cookieToken) {
       res.status(401)
       res.json({ message: "No refresh token in the request" })
       return
     }
 
     // Extract userId from token
-    const userId = await getUserIdFromToken(token)
+    const userId = await getUserIdFromToken(cookieToken)
     if (!userId) {
       res.status(401)
       res.json({ message: "Invalid token. Not userId on token payload" })
@@ -188,8 +196,24 @@ const refresh = async (req: Request, res: Response, next: NextFunction): Promise
       accessToken: newAccessToken,
     })
   } catch (err) {
-    res.status(401)
-    next(err)
+    if (!isError(err)) {
+      console.log("Unknown error trying to refresh", err)
+      next(err)
+      return
+    }
+
+    const customErr = new Error()
+    customErr.name = "UsersRoutes:Refresh Error"
+    customErr.stack = err.stack
+
+    if (err.name == "JWTExpired") {
+      res.status(401)
+      customErr.message = "Expred access token get a new one to proceed"
+    } else {
+      customErr.message = "Unexpected error trying to refresh: " + err.message
+    }
+
+    next(customErr)
   }
 }
 

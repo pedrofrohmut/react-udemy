@@ -51,10 +51,16 @@ const getAllIdeas = async (req: Request, res: Response, next: NextFunction): Pro
     const ideasOutput = ideasDb.map(idea => ideaDbToOutput(idea as any))
     res.json(ideasOutput)
   } catch (err) {
-    // res.status(500).send("Unexpected error occurred trying to get all ideas.")
-    if (err instanceof Error) {
-      next(new Error("Unexpected error occurred trying to get all ideas: " + err.message))
+    if (!isError(err)) {
+      console.log("Unknown error trying to get all ideas", err)
+      next(err)
+      return
     }
+
+    const customErr = new Error("Unexpected error occurred trying to get all ideas: " + err.message)
+    customErr.name = "IdeasRoutes:GetAllIdeas Error"
+    customErr.stack = err.stack
+    next(customErr)
   }
 }
 
@@ -68,10 +74,16 @@ const getSingleIdea = async (req: Request, res: Response, next: NextFunction): P
     const ideaOutput = ideaDbToOutput(idea as any)
     res.json(ideaOutput)
   } catch (err) {
-    // res.status(500).send("Unexpected error occurred trying to get idea by id.")
-    if (err instanceof Error) {
-      next(new Error("Unexpected error occurred trying to get idea by id."))
+    if (!isError(err)) {
+      console.log("Unknown error trying to get single idea", err)
+      next(err)
+      return
     }
+
+    const customErr = new Error("Unexpected error occurred trying to get idea by id: " + err.message)
+    customErr.name = "IdeasRoutes:GetSingleIdea Error"
+    customErr.stack = err.stack
+    next(customErr)
   }
 }
 
@@ -103,10 +115,16 @@ const createIdea = async (req: Request, res: Response, next: NextFunction): Prom
 
     res.status(201).json(model)
   } catch (err) {
-    // res.status(500).send("Unexpected error occurred trying to save a new idea.")
-    if (err instanceof Error) {
-      next(new Error("Unexpected error occurred trying to save a new idea: " + err.message))
+    if (!isError(err)) {
+      console.log("Unknown error trying to save a new idea", err)
+      next(err)
+      return
     }
+
+    const customErr = new Error("Unexpected error occurred trying to save a new idea: " + err.message)
+    customErr.name = "IdeasRoutes:CreateIdea Error"
+    customErr.stack = err.stack
+    next(customErr)
   }
 }
 
@@ -149,12 +167,16 @@ const updateIdea = async (req: Request, res: Response, next: NextFunction): Prom
 
     res.status(204).send("")
   } catch (err) {
-    if (err instanceof Error) {
-      // res.status(500).send("Unexpected error occurred when trying to update an idea")
-      if (err instanceof Error) {
-        next(new Error("Unexpected error occurred when trying to update an idea: " + err.message))
-      }
+    if (!isError(err)) {
+      console.log("Unknown error trying to update idea.", err)
+      next(err)
+      return
     }
+
+    const customErr = new Error("Unexpected error occurred when trying to update an idea: " + err.message)
+    customErr.name = "IdeasRoutes:UpdateIdea Error"
+    customErr.stack = err.stack
+    next(customErr)
   }
 }
 
@@ -184,10 +206,16 @@ const deleteIdea = async (req: Request, res: Response, next: NextFunction): Prom
     res.status(204)
     res.send("")
   } catch (err) {
-    // res.status(500).send("Unexpected error occurred when trying to delete an idea")
-    if (err instanceof Error) {
-      next(new Error("Unexpected error occurred when trying to delete an idea"))
+    if (!isError(err)) {
+      console.log("Unknown error trying to delete idea.", err)
+      next(err)
+      return
     }
+
+    const customErr = new Error("Unexpected error occurred when trying to delete an idea: " + err.message)
+    customErr.name = "IdeasRoutes:DeleteIdea Error"
+    customErr.stack = err.stack
+    next(customErr)
   }
 }
 

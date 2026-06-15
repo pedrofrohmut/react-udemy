@@ -28,14 +28,13 @@ export const protect = async (req: Request, res: Response, next: NextFunction): 
     const { payload } = await jwtVerify(token, secret)
     userId = payload?.userId as string || ""
   } catch (err) {
-    res.status(401)
-
     if (!isError(err)) {
       res.json({ message: "Unknown error to verify token" })
       return
     }
 
     if (err.name === "JWTExpired") {
+      res.status(401)
       res.json({ message: "Expired access token get a new one to proceed" })
       return
     }
@@ -61,13 +60,15 @@ export const protect = async (req: Request, res: Response, next: NextFunction): 
     req.user = { id: userDb._id.toString(), name: userDb.name, email: userDb.email }
     next()
   } catch (err) {
-    if (err instanceof Error) {
-      const customErr = new Error("Unexpected error occurred trying to protect the route")
-      customErr.name = "Auth Protect Error"
-      customErr.stack = err.stack
-      next(customErr)
+    if (!isError(err)) {
+      console.log("Unknown error trying to protect the route", err)
+      next(err)
       return
     }
-    console.log("Unknown error trying to protect the route")
+
+    const customErr = new Error("Unexpected error occurred trying to protect the route: " + err.message)
+    customErr.name = "AuthMiddleware:Protect Error"
+    customErr.stack = err.stack
+    next(customErr)
   }
 }
