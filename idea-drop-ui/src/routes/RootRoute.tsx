@@ -43,7 +43,9 @@ type RouterContext = {
   queryClient: QueryClient
 }
 
-export const rootRoute = createRootRouteWithContext<RouterContext>()({head: () => {return {
+export const rootRoute = createRootRouteWithContext<RouterContext>()({
+  head: () => {
+    return {
       meta: [
         { title: "IdeaDrop - Your Idea Hub" },
         {

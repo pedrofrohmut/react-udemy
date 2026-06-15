@@ -3,6 +3,7 @@
 :root {
     --bg-main: hsl(0, 0%, 14%);
     --bg-secondary: hsl(0, 0%, 18%);
+    --bg-darker: hsl(0, 0%, 10%);
     --clr-main: hsl(0, 0%, 86%);
 }
 

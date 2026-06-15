@@ -1,18 +1,30 @@
-import rootRoute from "./RootRoute"
-import HomeRoute from "./HomeRoute"
-import AboutRoute from "./AboutRoute"
-import IdeasRoute from "./ideas/IdeasRoute"
-import IdeasDetailsRoute from "./ideas/IdeasDetailsRoute"
-import NewIdeaRoute from "./ideas/NewIdeaRoute"
-import EditIdeaRoute from "./ideas/EditIdeaRoute"
+import rootRoute from "@/routes/RootRoute"
+
+import homeRoute from "@/routes/HomeRoute"
+import aboutRoute from "@/routes/AboutRoute"
+
+import ideasRoute from "@/routes/ideas/IdeasRoute"
+import ideasDetailsRoute from "@/routes/ideas/IdeasDetailsRoute"
+import newIdeaRoute from "@/routes/ideas/NewIdeaRoute"
+import editIdeaRoute from "@/routes/ideas/EditIdeaRoute"
+
+import authRoute from "@/routes/auth/AuthRoute"
+import signUpRoute from "@/routes/auth/SignUpRoute"
+import signInRoute from "@/routes/auth/SignInRoute"
 
 const routeTree = rootRoute.addChildren([
-  HomeRoute,
-  AboutRoute,
-  IdeasRoute,
-  IdeasDetailsRoute,
-  NewIdeaRoute,
-  EditIdeaRoute,
+  homeRoute,
+  aboutRoute,
+
+  ideasRoute,
+  ideasDetailsRoute,
+  newIdeaRoute,
+  editIdeaRoute,
+
+  authRoute.addChildren([
+    signUpRoute,
+    signInRoute,
+  ])
 ])
 
 export default routeTree

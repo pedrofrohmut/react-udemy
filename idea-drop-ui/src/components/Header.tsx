@@ -36,6 +36,21 @@ const Header = () => {
           </Link>
         </nav>
 
+        <nav>
+          <Link
+            to="/auth/signin"
+            className="text-gray-200 hover:text-gray-400 font-medium transition px-3 py-2 leading-none"
+          >
+            Sign In
+          </Link>
+          <Link
+            to="/auth/signup"
+            className="bg-(--bg-secondary) hover:bg-(--bg-darker) text-gray-200 font-medium transition px-4 py-2 rounded-md leading-none"
+          >
+            Sign Up
+          </Link>
+        </nav>
+
       </div>
     </header>
   )
