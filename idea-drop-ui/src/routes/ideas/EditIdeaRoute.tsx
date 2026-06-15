@@ -1,9 +1,9 @@
 import { createRoute, Link, useNavigate } from "@tanstack/react-router"
 import { useMutation, useSuspenseQuery, queryOptions } from "@tanstack/react-query"
-import { useRef, useEffect } from "react"
+import { useRef } from "react"
 
 import rootRoute from "../RootRoute"
-import { editIdea, fetchIdea } from "@/ideas-api"
+import { editIdea, fetchIdea } from "@/api/ideas-api"
 
 import type { Idea, EditIdea } from "@/types"
 

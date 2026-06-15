@@ -1,19 +1,58 @@
-import { useRef } from "react"
-import { createRoute, Link } from "@tanstack/react-router"
+import { useRef, useState } from "react"
+import { createRoute, Link, useNavigate } from "@tanstack/react-router"
+import { useMutation } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 import authRoute from "@/routes/auth/AuthRoute"
+import { signUp } from "@/api/auth-api"
+import type { CreateUser } from "@/types"
 
 const SignUpPage = () => {
+  const navigate = useNavigate()
+
+  const [error, setError] = useState<string | null>(null)
+
   const nameRef = useRef<HTMLInputElement>(null)
   const emailRef = useRef<HTMLInputElement>(null)
   const passwordRef = useRef<HTMLInputElement>(null)
+
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (newUser: CreateUser) => signUp(newUser),
+    onSuccess: () => {
+      navigate({ to: "/auth/signin" })
+    },
+    onError: (err: any) => {
+      setError("Something went wrong. Could not add user.")
+      console.log(err.message)
+    },
+  })
+
+  const handleSubmit = async (e: React.SubmitEvent): Promise<void> => {
+    e.preventDefault()
+
+    const name = nameRef.current?.value.trim() || ""
+    const email = emailRef.current?.value.trim() || ""
+    const password = passwordRef.current?.value.trim() || ""
+
+    if (!name || !email || !password) {
+      setError("Please, fill in all the fields.")
+      return
+    }
+
+    const newUser: CreateUser = { name, email, password }
+
+    await mutateAsync(newUser)
+    toast.success("Success: user created.")
+  }
 
   return (
     <div className="max-w-md mx-auto">
 
       <h1 className="text-3xl font-bold mb-6">Sign Up</h1>
 
-      <form className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
+
+        {error && <div className="bg-red-100 text-red-700 px-4 py-2 rounded-md mb-4">{error}</div>}
 
         {/* Name */}
         <div>
@@ -46,7 +85,7 @@ const SignUpPage = () => {
           <label htmlFor="password" className="block text-gray-300 font-medium mb-1">Password</label>
           <input
             id="password"
-            type="text"
+            type="password"
             className="w-full border border-gray-500 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your password..."
             autoComplete="off"
@@ -59,7 +98,7 @@ const SignUpPage = () => {
             type="submit"
             className="bg-blue-600 hover:bg-blue-800 text-gray-300 font-semibold px-6 py-2 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Sign Up
+            {isPending ? "Signing Up..." : "Sign Up"}
           </button>
         </div>
 

@@ -2,7 +2,7 @@ import { createRoute, Link, useNavigate } from "@tanstack/react-router"
 import { queryOptions, useSuspenseQuery, useMutation } from "@tanstack/react-query"
 
 import rootRoute from "../RootRoute"
-import { fetchIdea, deleteIdea } from "@/ideas-api"
+import { fetchIdea, deleteIdea } from "@/api/ideas-api"
 
 import type { Idea } from "@/types"
 

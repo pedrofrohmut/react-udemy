@@ -2,7 +2,7 @@ import { createRoute, useNavigate } from "@tanstack/react-router"
 import { useMutation } from "@tanstack/react-query"
 import { useRef } from "react"
 
-import { createIdea } from "@/ideas-api"
+import { createIdea } from "@/api/ideas-api"
 import rootRoute from "../RootRoute"
 
 import type { NewIdea } from "@/types"
@@ -22,7 +22,7 @@ const NewIdeaPage = () => {
     },
   })
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault()
 
     const title = titleRef.current?.value.trim() || ""

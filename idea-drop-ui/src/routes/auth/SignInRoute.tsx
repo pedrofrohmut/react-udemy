@@ -32,7 +32,7 @@ const SignInPage = () => {
           <label htmlFor="password" className="block text-gray-300 font-medium mb-1">Password</label>
           <input
             id="password"
-            type="text"
+            type="password"
             className="w-full border border-gray-500 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your password..."
             autoComplete="off"

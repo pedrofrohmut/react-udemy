@@ -22,3 +22,9 @@ export type EditIdea = {
   description: string
   tags: Array<string>
 }
+
+export type CreateUser = {
+  name: string
+  email: string
+  password: string
+}

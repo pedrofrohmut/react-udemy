@@ -3,7 +3,7 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query"
 
 import rootRoute from "../RootRoute"
 import IdeaCard from "@/components/IdeaCard"
-import { fetchRecentIdeas } from "@/ideas-api"
+import { fetchRecentIdeas } from "@/api/ideas-api"
 
 import type { Idea } from "@/types"
 

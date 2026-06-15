@@ -2,6 +2,7 @@ import { createRootRouteWithContext, Outlet, HeadContent, Link } from "@tanstack
 import { QueryClient } from "@tanstack/react-query"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
+import { Toaster } from "sonner"
 
 import "../styles.css"
 
@@ -18,7 +19,11 @@ const RootComponent = () => {
           </div>
         </main>
       </div>
+
+      <Toaster />
+
       <HeadContent />
+
       <TanStackDevtools
         config={{ position: "bottom-right" }}
         plugins={[ { name: "TanStack Router", render: <TanStackRouterDevtoolsPanel /> } ]}
