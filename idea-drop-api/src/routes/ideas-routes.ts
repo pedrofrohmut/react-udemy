@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from "express"
 
 import IdeaModel, { ideaDbToOutput } from "../models/idea-model"
-import { isNumber } from "../utils/utils"
+import { isNumber, isError } from "../utils/utils"
 import { protect } from "../middleware/auth-middleware"
 
 import type { IdeaOutput, IdeaDb } from "../types"

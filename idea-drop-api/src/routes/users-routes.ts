@@ -7,6 +7,16 @@ import { isError } from "../utils/utils"
 
 import type { UserDb } from "../types"
 
+// Set refresh token in HTTP-Only cookie (cant be accessed by javascript, more secure)
+const setRefreshTokenCookie = (res: Response, refreshToken: string) => {
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
+  })
+}
+
 const getAllUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   if (process.env.NODE_ENV !== "development") {
     res.status(401)
@@ -51,14 +61,14 @@ const signUp = async (req: Request, res: Response, next: NextFunction): Promise<
       return
     }
 
-    const userDb = await UserModel.find({ email })
+    const userDb = await UserModel.findOne({ email }).exec()
     if (userDb) {
       res.status(400)
       res.json({ message: "User with this e-mail already exists. This e-mail is not available." })
       return
     }
 
-    const passwordHash = hashPassword(password)
+    const passwordHash = await hashPassword(password)
 
     // Save to mongo
     const query = new UserModel({ name, email, passwordHash })
@@ -111,13 +121,7 @@ const signIn = async (req: Request, res: Response, next: NextFunction): Promise<
     const accessToken = await generateJWT({ userId }, "short")
     const refreshToken = await generateJWT({ userId }, "long")
 
-    // Set refresh token in HTTP-Only cookie (cant be accessed by javascript, more secure)
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
-      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
-    })
+    setRefreshTokenCookie(res, refreshToken)
 
     res.status(200)
     res.json({
@@ -141,9 +145,10 @@ const signIn = async (req: Request, res: Response, next: NextFunction): Promise<
 }
 
 const signOut = (req: Request, res: Response, next: NextFunction): void => {
-  // res.clearCookie("refreshToken", { httpOnly: true, secure: true, sameSite: "none" })
   try {
+    // res.clearCookie("refreshToken", { httpOnly: true, secure: true, sameSite: "none" })
     res.clearCookie("refreshToken") // TODO: Check if you need options. Use above line if so
+
     res.status(200)
     res.json({ message: "User signed out" })
   } catch (err) {
