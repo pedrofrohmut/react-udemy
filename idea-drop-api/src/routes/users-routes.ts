@@ -3,6 +3,7 @@ import jose from "jose"
 
 import UserModel from "../models/user-model"
 import { hashPassword, generateJWT, matchPasswordAndHash, getUserIdFromToken } from "../utils/auth-utils"
+import { isError } from "../utils/utils"
 
 import type { UserDb } from "../types"
 
@@ -63,7 +64,7 @@ const signUp = async (req: Request, res: Response, next: NextFunction): Promise<
 
     res.status(201).json({ message: "User created" })
   } catch (err) {
-    if (err instanceof Error) {
+    if (isError(err)) {
       const customErr = new Error("Unexpected error occurred trying to sign up")
       customErr.name = "SignUp Error"
       customErr.stack = err.stack

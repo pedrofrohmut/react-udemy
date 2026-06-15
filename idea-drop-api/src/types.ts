@@ -8,6 +8,7 @@ export type IdeaOutput = {
   tags: Array<string>
   createdAt: string
   updatedAt: string
+  userId: string
 }
 
 export type IdeaDb = {
@@ -18,6 +19,7 @@ export type IdeaDb = {
   tags: Array<string>
   createdAt: string
   updatedAt: string
+  userId: Types.ObjectId
   __v: number
 }
 

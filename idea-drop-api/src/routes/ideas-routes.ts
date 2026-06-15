@@ -43,7 +43,7 @@ const getAllIdeas = async (req: Request, res: Response, next: NextFunction): Pro
     }
 
     // Apply limit
-    const limit = isNumber(req.query.limit) ? parseInt(req.query.limit as string) : 10
+    const limit = req.query?.limit && isNumber(req.query.limit) ? req.query.limit : 10
     query = query.limit(limit)
 
     const ideasDb = await query.exec()
@@ -53,7 +53,7 @@ const getAllIdeas = async (req: Request, res: Response, next: NextFunction): Pro
   } catch (err) {
     // res.status(500).send("Unexpected error occurred trying to get all ideas.")
     if (err instanceof Error) {
-      next(new Error("Unexpected error occurred trying to get all ideas."))
+      next(new Error("Unexpected error occurred trying to get all ideas: " + err.message))
     }
   }
 }
@@ -118,6 +118,18 @@ const updateIdea = async (req: Request, res: Response, next: NextFunction): Prom
       return
     }
 
+    if (!req.user || !req.user?.id) {
+      res.status(401)
+      res.json({ message: "No user in the request" })
+      return
+    }
+
+    if (idea.userId.toString() !== req.user.id) {
+      res.status(403)
+      res.json({ message: "Authenticated user is not the owner of this idea" })
+      return
+    }
+
     const { ok, tagsArray } = getTagsArray(req.body.tags)
     if (!ok) {
       res.status(400).json({
@@ -148,15 +160,29 @@ const updateIdea = async (req: Request, res: Response, next: NextFunction): Prom
 
 const deleteIdea = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const idea = await IdeaModel.findById(req.params.id)
+    const idea = await IdeaModel.findById(req.params.id).lean()
     if (!idea) {
-      res.status(400).json({ message: "Idea not found with passed id. Nothing happend." })
+      res.status(400)
+      res.json({ message: "Idea not found with passed id. Nothing happend." })
+      return
+    }
+
+    if (!req.user || !req.user?.id) {
+      res.status(401)
+      res.json({ message: "No user in the request" })
+      return
+    }
+
+    if (idea.userId.toString() !== req.user.id) {
+      res.status(403)
+      res.json({ message: "Authenticated user is not the owner of this idea" })
       return
     }
 
     await IdeaModel.deleteOne({ _id: req.params.id })
 
-    res.status(204).send("")
+    res.status(204)
+    res.send("")
   } catch (err) {
     // res.status(500).send("Unexpected error occurred when trying to delete an idea")
     if (err instanceof Error) {

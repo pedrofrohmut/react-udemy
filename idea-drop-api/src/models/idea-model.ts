@@ -25,6 +25,7 @@ export const ideaDbToOutput = (ideaDb: IdeaDb): IdeaOutput => ({
   tags: ideaDb.tags,
   createdAt: ideaDb.createdAt,
   updatedAt: ideaDb.updatedAt,
+  userId: ideaDb.userId?.toString() || "",
 })
 
 export default IdeaModel

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express"
 import { jwtVerify } from "jose"
 
+import { isError } from "../utils/utils"
 import { getJWTSecret } from "../utils/auth-utils"
 import UserModel from "../models/user-model"
 
@@ -25,11 +26,11 @@ export const protect = async (req: Request, res: Response, next: NextFunction): 
   try {
     const secret = getJWTSecret()
     const { payload } = await jwtVerify(token, secret)
-    userId = payload?.userId || ""
+    userId = payload?.userId as string || ""
   } catch (err) {
     res.status(401)
 
-    if (!err instanceof Error) {
+    if (!isError(err)) {
       res.json({ message: "Unknown error to verify token" })
       return
     }
