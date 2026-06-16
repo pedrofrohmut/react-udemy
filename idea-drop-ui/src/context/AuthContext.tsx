@@ -1,7 +1,7 @@
 import { createContext, useState, useContext } from "react"
 import type { ReactNode } from "react"
 
-type AuthUser = {
+export type AuthUser = {
   id: string
   name: string
   email: string

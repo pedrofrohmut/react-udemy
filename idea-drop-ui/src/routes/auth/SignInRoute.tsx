@@ -7,6 +7,7 @@ import authRoute from "@/routes/auth/AuthRoute"
 import { signInUser } from "@/api/auth-api"
 import type { SignInCredentials, SignedUser } from "@/types"
 import { useAuth } from "@/context/AuthContext"
+import { lsSetAccessToken, lsSetUser } from "@/utils/localStorageUtils"
 
 const SignInPage = () => {
   const navigate = useNavigate()
@@ -47,8 +48,8 @@ const SignInPage = () => {
     setUser(user)
 
     // Save to localStorage
-    localStorage.setItem("accessToken", JSON.stringify(token))
-    localStorage.setItem("signedUser", JSON.stringify(user))
+    lsSetAccessToken(token)
+    lsSetUser(user)
 
     toast.success("Success: users authenticated.")
   }

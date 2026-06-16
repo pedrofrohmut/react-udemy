@@ -21,3 +21,12 @@ export const signInUser = async (credentials: SignInCredentials) => {
     throw new Error(message)
   }
 }
+
+export const signOutUser = async (): Promise<void> => {
+  try {
+    await api.post("/users/signout")
+  } catch (err: any) {
+    const message = err.response?.data?.message || "Failed to sign out"
+    throw new Error(message)
+  }
+}
