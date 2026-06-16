@@ -3,12 +3,14 @@ import { useMutation } from "@tanstack/react-query"
 import { useRef } from "react"
 
 import { createIdea } from "@/api/ideas-api"
-import rootRoute from "../RootRoute"
+import rootRoute from "@/routes/RootRoute"
+import { useAuth } from "@/context/AuthContext"
 
 import type { NewIdea } from "@/types"
 
 const NewIdeaPage = () => {
   const navigate = useNavigate()
+  const { accessToken } = useAuth()
 
   const titleRef = useRef<HTMLInputElement>(null)
   const summaryRef = useRef<HTMLInputElement>(null)
@@ -16,7 +18,7 @@ const NewIdeaPage = () => {
   const tagsRef = useRef<HTMLInputElement>(null)
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: (newIdea: NewIdea) => createIdea(newIdea),
+    mutationFn: (newIdea: NewIdea) => createIdea(newIdea, accessToken),
     onSuccess: () => {
       navigate({ to: "/ideas" })
     },
@@ -53,44 +55,44 @@ const NewIdeaPage = () => {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="title" className="block text-gray-200 font-medium mb-1">Title</label>
+          <label htmlFor="title" className="block text-gray-300 font-medium mb-1">Title</label>
           <input
             id="title"
             type="text"
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-500 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter idea title"
             ref={titleRef}
           />
         </div>
 
         <div>
-          <label htmlFor="summary" className="block text-gray-200 font-medium mb-1">Summary</label>
+          <label htmlFor="summary" className="block text-gray-300 font-medium mb-1">Summary</label>
           <input
             id="summary"
             type="text"
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-500 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter idea summary"
             ref={summaryRef}
           />
         </div>
 
         <div>
-          <label htmlFor="body" className="block text-gray-200 font-medium mb-1">Description</label>
+          <label htmlFor="body" className="block text-gray-300 font-medium mb-1">Description</label>
           <textarea
             id="body"
             rows={6}
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-500 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
             placeholder="Write out the description of your idea"
             ref={descriptionRef}
           />
         </div>
 
         <div>
-          <label htmlFor="tags" className="block text-gray-200 font-medium mb-1">Tags</label>
+          <label htmlFor="tags" className="block text-gray-300 font-medium mb-1">Tags</label>
           <input
             id="tags"
             type="text"
-            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-gray-500 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="optional tags, comma separated"
             ref={tagsRef}
           />

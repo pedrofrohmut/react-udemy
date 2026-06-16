@@ -10,7 +10,7 @@ import type { CreateUser } from "@/types"
 const SignUpPage = () => {
   const navigate = useNavigate()
 
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<Optional<string>>(null)
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (newUser: CreateUser) => signUpUser(newUser),

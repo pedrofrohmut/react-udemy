@@ -8,21 +8,21 @@ export type AuthUser = {
 }
 
 type AuthContextType = {
-  accessToken: string | null
-  setAccessToken: (token: string | null) => void
-  user: AuthUser | null
-  setUser: (user: AuthUser | null) => void
+  accessToken: Optional<string>
+  setAccessToken: (token: Optional<string>) => void
+  user: Optional<AuthUser>
+  setUser: (user: Optional<AuthUser>) => void
 }
 
-const AuthContext = createContext<AuthContextType | null>(null)
+const AuthContext = createContext<Optional<AuthContextType>>(null)
 
 type AuthProviderProps = {
   children: ReactNode
 }
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  const [accessToken, setAccessToken] = useState<string | null>(null)
-  const [user, setUser] = useState<AuthUser | null>(null)
+  const [accessToken, setAccessToken] = useState<Optional<string>>(null)
+  const [user, setUser] = useState<Optional<AuthUser>>(null)
 
   return (
     <AuthContext.Provider value={{ accessToken, setAccessToken, user, setUser }}>

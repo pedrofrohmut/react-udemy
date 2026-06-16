@@ -40,3 +40,9 @@ export type SignedUser = {
   email: string
   accessToken: string
 }
+
+declare global {
+  type Optional<T> = T | null
+}
+
+export {}

@@ -7,13 +7,12 @@ import authRoute from "@/routes/auth/AuthRoute"
 import { signInUser } from "@/api/auth-api"
 import type { SignInCredentials, SignedUser } from "@/types"
 import { useAuth } from "@/context/AuthContext"
-import { lsSetAccessToken, lsSetUser } from "@/utils/localStorageUtils"
 
 const SignInPage = () => {
   const navigate = useNavigate()
   const { setAccessToken, setUser } = useAuth()
 
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<Optional<string>>(null)
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: (credentials: SignInCredentials) => signInUser(credentials),
@@ -46,10 +45,6 @@ const SignInPage = () => {
     // Save to authContext
     setAccessToken(token)
     setUser(user)
-
-    // Save to localStorage
-    lsSetAccessToken(token)
-    lsSetUser(user)
 
     toast.success("Success: users authenticated.")
   }

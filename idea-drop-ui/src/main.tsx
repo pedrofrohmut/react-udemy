@@ -5,7 +5,7 @@ import { createRouter } from "@tanstack/react-router"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
 import { AuthProvider } from "@/context/AuthContext"
-import routeTree from "./routes/RouteTree"
+import routeTree from "@/routes/RouteTree"
 
 declare module "@tanstack/react-router" {
   interface Register {
@@ -31,6 +31,7 @@ const router = createRouter({
 const main = () => {
   const rootElement = document.getElementById("app")!
   const reactRoot = ReactDOM.createRoot(rootElement)
+
   reactRoot.render(
     <AuthProvider>
       <QueryClientProvider client={queryClient}>

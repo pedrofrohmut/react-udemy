@@ -1,13 +1,14 @@
-import { Link } from "@tanstack/react-router"
+import { Link, useNavigate } from "@tanstack/react-router"
 import { Lightbulb } from "lucide-react"
 import { toast } from "sonner"
 
 import { useAuth } from "@/context/AuthContext"
-import { lsRemoveUser, lsRemoveAccessToken } from "@/utils/localStorageUtils"
 import { signOutUser } from "@/api/auth-api"
 
 const Header = () => {
   const { user, accessToken, setUser, setAccessToken } = useAuth()
+
+  const navigate = useNavigate()
 
   const handleSignOut = async () => {
     if (!confirm("Are you sure you want to Sign Out?")) {
@@ -17,12 +18,10 @@ const Header = () => {
     setUser(null)
     setAccessToken(null)
 
-    lsRemoveUser()
-    lsRemoveAccessToken()
-
     await signOutUser()
-
     toast.success("User signed out.")
+
+    navigate({ to: "/" })
   }
 
   return (

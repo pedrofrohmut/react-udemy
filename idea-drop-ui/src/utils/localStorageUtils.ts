@@ -4,7 +4,7 @@ export type LSUser = {
   email: string
 }
 
-export const lsSetUser = (user: LSUser | null): void => {
+export const lsSetUser = (user: Optional<LSUser>): void => {
   if (user) {
     localStorage.setItem("signedUser", JSON.stringify(user))
   } else {
@@ -12,7 +12,7 @@ export const lsSetUser = (user: LSUser | null): void => {
   }
 }
 
-export const lsGetUser = (): LSUser | null => {
+export const lsGetUser = (): Optional<LSUser> => {
   const lsUser = localStorage.getItem("signedUser")
   if (!lsUser) {
     return null
@@ -24,7 +24,7 @@ export const lsRemoveUser = (): void => {
   localStorage.removeItem("signedUser")
 }
 
-export const lsSetAccessToken = (accessToken: string | null): void => {
+export const lsSetAccessToken = (accessToken: Optional<string>): void => {
   if (accessToken) {
     localStorage.setItem("accessToken", accessToken)
   } else {
@@ -32,7 +32,7 @@ export const lsSetAccessToken = (accessToken: string | null): void => {
   }
 }
 
-export const lsGetAccessToken = (): string | null => {
+export const lsGetAccessToken = (): Optional<string> => {
   const lsToken = localStorage.getItem("accessToken")
   if (!lsToken) {
     return null

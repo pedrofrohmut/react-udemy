@@ -1,15 +1,18 @@
 import { createRoute, Link, useNavigate } from "@tanstack/react-router"
 import { useMutation, useSuspenseQuery, queryOptions } from "@tanstack/react-query"
 import { useRef } from "react"
+import { toast } from "sonner"
 
-import rootRoute from "../RootRoute"
+import rootRoute from "@/routes/RootRoute"
 import { editIdea, fetchIdea } from "@/api/ideas-api"
+import { useAuth } from "@/context/AuthContext"
 
 import type { Idea, EditIdea } from "@/types"
 
 const EditIdeaPage = () => {
   const params = EditIdeaRoute.useParams()
   const navigate = useNavigate()
+  const { accessToken } = useAuth()
 
   const { data } = useSuspenseQuery(ideaQueryOptions(params.ideaId))
   const idea: Idea = data
@@ -22,7 +25,7 @@ const EditIdeaPage = () => {
   const tagsRef = useRef<HTMLInputElement>(null)
 
   const { mutateAsync } = useMutation({
-    mutationFn: (idea: EditIdea) => editIdea(idea),
+    mutationFn: (updatedIdea: EditIdea) => editIdea(updatedIdea, accessToken),
     onSuccess: () => {
       navigate({ to: `/ideas/${params.ideaId}` })
     },
@@ -43,6 +46,11 @@ const EditIdeaPage = () => {
 
     // Trim all then remove empty/blank tags
     const tags: Array<string> = tagsInput !== "" ? tagsInput.split(",").map(x => x.trim()).filter(x => x !== "") : []
+
+    if (!accessToken) {
+      toast.error("No accessToken provided")
+      return
+    }
 
     try {
       await mutateAsync({ id: params.ideaId, title, summary, description, tags })
