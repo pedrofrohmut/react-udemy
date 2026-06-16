@@ -7,14 +7,14 @@ type AuthUser = {
   email: string
 }
 
-type AuthContext = {
+type AuthContextType = {
   accessToken: string | null
-  setAccessToken: (token: string) => void
+  setAccessToken: (token: string | null) => void
   user: AuthUser | null
-  setUser: (user: AuthUser) => void
+  setUser: (user: AuthUser | null) => void
 }
 
-const AuthContext = createContext<AuthContext | null>(null)
+const AuthContext = createContext<AuthContextType | null>(null)
 
 type AuthProviderProps = {
   children: ReactNode

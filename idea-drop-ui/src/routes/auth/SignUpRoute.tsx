@@ -1,10 +1,10 @@
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { createRoute, Link, useNavigate } from "@tanstack/react-router"
 import { useMutation } from "@tanstack/react-query"
 import { toast } from "sonner"
 
 import authRoute from "@/routes/auth/AuthRoute"
-import { signUp } from "@/api/auth-api"
+import { signUpUser } from "@/api/auth-api"
 import type { CreateUser } from "@/types"
 
 const SignUpPage = () => {
@@ -12,12 +12,8 @@ const SignUpPage = () => {
 
   const [error, setError] = useState<string | null>(null)
 
-  const nameRef = useRef<HTMLInputElement>(null)
-  const emailRef = useRef<HTMLInputElement>(null)
-  const passwordRef = useRef<HTMLInputElement>(null)
-
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: (newUser: CreateUser) => signUp(newUser),
+    mutationFn: (newUser: CreateUser) => signUpUser(newUser),
     onSuccess: () => {
       navigate({ to: "/auth/signin" })
     },
@@ -30,16 +26,16 @@ const SignUpPage = () => {
   const handleSubmit = async (e: React.SubmitEvent): Promise<void> => {
     e.preventDefault()
 
-    const name = nameRef.current?.value.trim() || ""
-    const email = emailRef.current?.value.trim() || ""
-    const password = passwordRef.current?.value.trim() || ""
+    const username = e.target.username?.value.trim() || ""
+    const email = e.target.email?.value.trim() || ""
+    const password = e.target.password?.value.trim() || ""
 
-    if (!name || !email || !password) {
+    if (!username || !email || !password) {
       setError("Please, fill in all the fields.")
       return
     }
 
-    const newUser: CreateUser = { name, email, password }
+    const newUser: CreateUser = { name: username, email, password }
 
     await mutateAsync(newUser)
     toast.success("Success: user created.")
@@ -60,10 +56,10 @@ const SignUpPage = () => {
           <input
             id="name"
             type="text"
+            name="username"
             className="w-full border border-gray-500 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your name..."
             autoComplete="off"
-            ref={nameRef}
           />
         </div>
 
@@ -73,10 +69,10 @@ const SignUpPage = () => {
           <input
             id="email"
             type="email"
+            name="email"
             className="w-full border border-gray-500 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your email..."
             autoComplete="off"
-            ref={emailRef}
           />
         </div>
 
@@ -86,10 +82,10 @@ const SignUpPage = () => {
           <input
             id="password"
             type="password"
+            name="password"
             className="w-full border border-gray-500 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter your password..."
             autoComplete="off"
-            ref={passwordRef}
           />
         </div>
 
@@ -97,6 +93,7 @@ const SignUpPage = () => {
           <button
             type="submit"
             className="bg-blue-600 hover:bg-blue-800 text-gray-300 font-semibold px-6 py-2 rounded-md transition disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isPending}
           >
             {isPending ? "Signing Up..." : "Sign Up"}
           </button>

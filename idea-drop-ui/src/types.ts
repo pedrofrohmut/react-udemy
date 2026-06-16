@@ -28,3 +28,15 @@ export type CreateUser = {
   email: string
   password: string
 }
+
+export type SignInCredentials = {
+  email: string
+  password: string
+}
+
+export type SignedUser = {
+  userId: string
+  name: string
+  email: string
+  accessToken: string
+}
