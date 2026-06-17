@@ -1,4 +1,5 @@
 import dotenv from "dotenv"
+import mongoose from "mongoose"
 
 import connectMongoDb from "../src/config/db-connection"
 import IdeaModel from "../src/models/idea-model"
@@ -10,9 +11,11 @@ const main = async () => {
 
     const conn = await connectMongoDb()
 
+    const userId = new mongoose.Types.ObjectId()
+
     for (var idea of ideas) {
       try {
-        const model = new IdeaModel(idea)
+        const model = new IdeaModel(Object.assign(idea, { userId }))
         await model.save()
       } catch (err) {
         console.log("Error to add idea", err?.message)
