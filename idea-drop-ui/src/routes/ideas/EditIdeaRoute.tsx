@@ -25,7 +25,7 @@ const EditIdeaPage = () => {
   const tagsRef = useRef<HTMLInputElement>(null)
 
   const { mutateAsync } = useMutation({
-    mutationFn: (updatedIdea: EditIdea) => editIdea(updatedIdea, accessToken),
+    mutationFn: (updatedIdea: EditIdea) => editIdea(updatedIdea),
     onSuccess: () => {
       navigate({ to: `/ideas/${params.ideaId}` })
     },

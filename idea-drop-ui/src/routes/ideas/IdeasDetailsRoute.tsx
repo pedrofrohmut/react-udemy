@@ -3,14 +3,12 @@ import { queryOptions, useSuspenseQuery, useMutation } from "@tanstack/react-que
 
 import rootRoute from "../RootRoute"
 import { fetchIdea, deleteIdea } from "@/api/ideas-api"
-import { useAuth } from "@/context/AuthContext"
 
 import type { Idea } from "@/types"
 
 const IdeasDetailsPage = () => {
   const params = IdeasDetailsRoute.useParams()
   const navigate = useNavigate()
-  const { accessToken } = useAuth()
 
   const { data } = useSuspenseQuery(ideaQueryOptions(params.ideaId))
   const idea: Idea = data
@@ -18,7 +16,7 @@ const IdeasDetailsPage = () => {
   if (!idea) return <>No idea found</>
 
   const { mutateAsync } = useMutation({
-    mutationFn: (id: string) => deleteIdea(id, accessToken),
+    mutationFn: (id: string) => deleteIdea(id),
     onSuccess: () => {
       navigate({ to: "/ideas" })
     },

@@ -1,17 +1,18 @@
 import axios from "axios"
 
-const api = (accessToken?: Optional<string>) => {
-  const authorizationHeader = accessToken ? `Bearer ${accessToken}` : ""
+let accessToken: Optional<string> = null
 
-  return axios.create({
-    baseURL: "/api",
-    // withCredentials: true,
-    withCredentials: false, // default
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": authorizationHeader,
-    },
-  })
+export const setStoreAccessToken = (token: Optional<string>) => {
+  accessToken = token
 }
+
+const api = axios.create({
+  baseURL: "/api",
+  withCredentials: true, // default false
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": accessToken !== null ? `Bearer ${accessToken}` : "",
+  }
+})
 
 export default api

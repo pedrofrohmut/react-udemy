@@ -4,13 +4,11 @@ import { useRef } from "react"
 
 import { createIdea } from "@/api/ideas-api"
 import rootRoute from "@/routes/RootRoute"
-import { useAuth } from "@/context/AuthContext"
 
 import type { NewIdea } from "@/types"
 
 const NewIdeaPage = () => {
   const navigate = useNavigate()
-  const { accessToken } = useAuth()
 
   const titleRef = useRef<HTMLInputElement>(null)
   const summaryRef = useRef<HTMLInputElement>(null)
@@ -18,7 +16,7 @@ const NewIdeaPage = () => {
   const tagsRef = useRef<HTMLInputElement>(null)
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: (newIdea: NewIdea) => createIdea(newIdea, accessToken),
+    mutationFn: (newIdea: NewIdea) => createIdea(newIdea),
     onSuccess: () => {
       navigate({ to: "/ideas" })
     },

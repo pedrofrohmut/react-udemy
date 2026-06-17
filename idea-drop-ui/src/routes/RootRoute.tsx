@@ -1,37 +1,14 @@
-import { useEffect } from "react"
-import { createRootRouteWithContext, Outlet, HeadContent, Link } from "@tanstack/react-router"
+ import { createRootRouteWithContext, Outlet, HeadContent, Link } from "@tanstack/react-router"
 import { QueryClient } from "@tanstack/react-query"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 import { TanStackDevtools } from "@tanstack/react-devtools"
-import { Toaster, toast } from "sonner"
+import { Toaster } from "sonner"
 
 import "@/styles.css"
 
 import Header from "@/components/Header"
-import { useAuth } from "@/context/AuthContext"
-import { refreshAccessToken } from "@/api/auth-api"
 
 const RootComponent = () => {
-  const { setUser, setAccessToken } = useAuth()
-
-  const refreshUserSession = async () => {
-    try {
-      const signedUser = await refreshAccessToken()
-      if (!signedUser) {
-        return
-      }
-      const { userId: id, name, email, accessToken } = signedUser
-      setUser({ id, name, email })
-      setAccessToken(accessToken)
-    } catch (err) {
-      toast.error("Could not refresh the user session")
-    }
-  }
-
-  useEffect(() => {
-    refreshUserSession()
-  }, [])
-
   return (
     <>
       <div className="min-h-screen _bg-secondary">
