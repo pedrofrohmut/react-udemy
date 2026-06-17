@@ -14,9 +14,19 @@ export const getJWTSecret = () => {
  * @param {string} expirationType - long or short
  */
 export const generateJWT = async (payload: any, expirationType: string): Promise<string> => {
+  // Other format for expiration commented out
+  // let expiration = ""
+  // if (expirationType === "long") {
+  //   expiration = "30d"
+  // } else if (process.env.NODE_ENV !== "development") {
+  //   expiration = "1m"
+  // } else {
+  //   expiration = "10m"
+  // }
+  // const expiration = expirationType === "long" ? "30d" : "1m" // TODO: 10 min for development only
+
   const alg = "HS256"
-  // const expiration = expirationType === "long" ? "30d" : "1m"
-  const expiration = expirationType === "long" ? "30d" : "10m" // TODO: 10 min for development only
+  const expiration = expirationType === "long" ? "30d" : "1m"
   const secret = getJWTSecret()
 
   const jwt =
