@@ -2,6 +2,7 @@ import { createRoute, Link, useNavigate } from "@tanstack/react-router"
 import { useMutation, useSuspenseQuery, queryOptions } from "@tanstack/react-query"
 import { useRef } from "react"
 import { toast } from "sonner"
+import { isAxiosError } from "axios"
 
 import rootRoute from "@/routes/RootRoute"
 import { editIdea, fetchIdea } from "@/api/ideas-api"
@@ -39,6 +40,7 @@ const EditIdeaPage = () => {
     const description = descriptionRef.current?.value.trim() || ""
     const tagsInput = tagsRef.current?.value.trim() || ""
 
+    // Required fields
     if (!title || !summary || !description) {
       alert("Please fill in all fields")
       return false
@@ -55,8 +57,12 @@ const EditIdeaPage = () => {
     try {
       await mutateAsync({ id: params.ideaId, title, summary, description, tags })
     } catch (err) {
-      console.error(err)
-      alert("Something went wrong. A new idea could not be added.")
+      if (isAxiosError(err)) {
+        toast.error(err.response?.data?.message || "Failed to get axios error message")
+      } else {
+        toast.error("Error: could not update an idea.")
+        console.error("[ERROR] error to update idea: " + err.message || "")
+      }
     }
   }
 
